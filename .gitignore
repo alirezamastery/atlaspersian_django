@@ -1,0 +1,15 @@
+/env/
+/venv/
+/.idea/
+/.vscode/
+__pycache__/
+*.pyc
+
+
+/media/
+.env
+*.json
+*.sql
+*.xlsx
+*.txt
+*.exe
