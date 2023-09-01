@@ -40,7 +40,7 @@ class ProductCategoryDetailSerializer(serializers.ModelSerializer):
     def get_attributes(self, obj: Category):
         attribute_ids = CategoryAttribute.objects \
             .filter(category=obj) \
-            .select_related('attribute') \
+            .select_related('attribute__unit') \
             .values_list('attribute_id', flat=True)
         attributes = Attribute.objects.filter(id__in=attribute_ids)
         return _AttributeSerializer(attributes, many=True).data

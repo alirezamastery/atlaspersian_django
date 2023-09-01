@@ -23,7 +23,12 @@ class _ImageSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = ProductImage
-        fields = ['product', 'url', 'is_main', 'description']
+        fields = [
+            # 'product', # product is not product_id, it is the Product Object!
+            'url',
+            'is_main',
+            'description'
+        ]
 
     def get_absolute_url(self, obj):
         if not obj.file:

@@ -16,13 +16,6 @@ class UserReadSerializerPublic(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'id',
             'mobile',
-            'is_active',
-            'is_superuser',
-            'verified_at',
-            'created_at',
-            'updated_at',
             'profile',
-            'groups'
         ]

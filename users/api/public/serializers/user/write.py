@@ -14,12 +14,6 @@ class UserWriteSerializerPublic(serializers.ModelSerializer):
         model = User
         fields = [
             'mobile',
-            'email',
-            'is_staff',
-            'is_active',
-            'is_superuser',
-            'user_permissions',
-            'groups'
         ]
 
     def to_representation(self, instance):

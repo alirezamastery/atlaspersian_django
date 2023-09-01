@@ -156,6 +156,13 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:9000',
+    'https://persia-atlas.com',
+    'https://atlaspersian.com',
+]
+
 # ******************* settings for DRF *******************
 DEFAULT_RENDERER_CLASSES = [
     'rest_framework.renderers.JSONRenderer',

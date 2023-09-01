@@ -1,14 +1,19 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.middleware.csrf import get_token
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
+
+from users.models import *
+from users.api.public.serializers import *
 
 
 __all__ = [
-    'LoginView',
-    'TestCookieView',
     'CSRFView',
+    'UserExistView',
+    'LoginView',
+    'LogoutView',
+    'TestCookieView',
 ]
 
 
@@ -21,6 +26,18 @@ class CSRFView(APIView):
         return response
 
 
+class UserExistView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        mobile = request.data.get('mobile')
+        try:
+            User.objects.get(mobile=mobile)
+            return Response({'exist': True})
+        except User.DoesNotExist:
+            return Response({'exist': False})
+
+
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
@@ -30,8 +47,17 @@ class LoginView(APIView):
         user = authenticate(mobile=mobile, password=password)
         if user is not None:
             login(request, user)
-            return Response({'info': 'ok'})
+            serializer = UserReadSerializerPublic(user)
+            return Response(serializer.data)
         return Response({'error': 'invalid credentials'}, status=400)
+
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        logout(request)
+        return Response({'info': 'logged out'})
 
 
 class TestCookieView(APIView):
