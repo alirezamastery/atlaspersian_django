@@ -220,3 +220,5 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME':          timedelta(days=7),
     'SLIDING_TOKEN_REFRESH_LIFETIME':  timedelta(days=14),
 }
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

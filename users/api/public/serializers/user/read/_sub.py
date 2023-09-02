@@ -10,4 +10,6 @@ class _ProfileSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'avatar',
+            'social_id',
+            'birth_date',
         ]

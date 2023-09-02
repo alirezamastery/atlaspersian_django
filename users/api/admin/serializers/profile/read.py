@@ -13,7 +13,7 @@ class ProfileReadSerializerAdmin(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['first_name', 'last_name', 'avatar']
+        fields = '__all__'
 
     def get_avatar_full_url(self, obj):
         if not obj.avatar:

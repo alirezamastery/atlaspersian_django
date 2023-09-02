@@ -10,10 +10,9 @@ from users.api.public.serializers import *
 
 __all__ = [
     'CSRFView',
-    'UserExistView',
+    'CheckMobileView',
     'LoginView',
     'LogoutView',
-    'TestCookieView',
 ]
 
 
@@ -26,7 +25,7 @@ class CSRFView(APIView):
         return response
 
 
-class UserExistView(APIView):
+class CheckMobileView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -58,15 +57,3 @@ class LogoutView(APIView):
     def post(self, request):
         logout(request)
         return Response({'info': 'logged out'})
-
-
-class TestCookieView(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        mobile = request.data.get('mobile')
-        password = request.data.get('password')
-        cookie = request.COOKIES.get('csrftoken')
-        print('user:', request.user)
-        print('cokies:', request.COOKIES)
-        return Response({'info': 'ok'})

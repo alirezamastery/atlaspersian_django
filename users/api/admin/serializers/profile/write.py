@@ -12,7 +12,13 @@ __all__ = [
 class ProfileWriteSerializerAdmin(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['first_name', 'last_name', 'avatar']
+        fields = [
+            'first_name',
+            'last_name',
+            'avatar',
+            'social_id',
+            'birth_date',
+        ]
 
     def to_representation(self, instance):
         return ProfileReadSerializerAdmin(instance, context=self.context).data

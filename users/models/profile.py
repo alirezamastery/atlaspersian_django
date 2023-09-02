@@ -12,7 +12,9 @@ class Profile(models.Model):
 
     first_name = models.CharField(max_length=256, default='', blank=True)
     last_name = models.CharField(max_length=256, default='', blank=True)
-    avatar = models.ImageField(upload_to='users/avatars/', null=True, blank=True)
+    avatar = models.ImageField(upload_to='user/avatar/', null=True, blank=True)
+    social_id = models.CharField(max_length=255, blank=True, default='')
+    birth_date = models.DateField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
