@@ -8,13 +8,10 @@ app_name = 'users_public'
 
 urlpatterns = [
     path('csrf/', CSRFView.as_view(), name='csrf-public'),
-    path('check-mobile/', CheckMobileView.as_view(), name='check-mobile'),
+    # path('check-mobile/', CheckMobileView.as_view(), name='check-mobile'),
 
-    path('signup/', SignupView.as_view(), name='signup'),
-    path('signup-verify/', SignupVerifyView.as_view(), name='signup-verify'),
-    path('otp-signup/', OtpSignupView.as_view(), name='otp-signup'),
-
-    path('otp-verify/', OtpVerifyView.as_view(), name='otp-verify'),
+    path('send-auth-otp/', SendAuthenticationOtpView.as_view(), name='send-auth-otp'),
+    path('verify-auth-otp/', VerifyAuthenticationOtpView.as_view(), name='verify-auth-otp'),
 
     path('login/', LoginView.as_view(), name='login-public'),
     path('logout/', LogoutView.as_view(), name='logout-public'),

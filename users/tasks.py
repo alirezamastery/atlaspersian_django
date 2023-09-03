@@ -11,14 +11,9 @@ from users.models import *
 logger = get_task_logger(__name__)
 
 __all__ = [
-    'send_otp_sms',
     'test_task',
+    'send_otp',
 ]
-
-
-@shared_task
-def test_task():
-    logger.info('++++++++++++++ test ++++++++++++++')
 
 
 def generate_otp():
@@ -26,26 +21,27 @@ def generate_otp():
 
 
 @shared_task
-def send_otp_sms(user_id: str):
-    try:
-        user = User.objects.get(pk=user_id)
-    except User.DoesNotExist:
-        return
-    code = generate_otp()
-    logger.info(f'sign up code: {user = } {code = }')
+def test_task():
+    logger.info('++++++++++++++ test ++++++++++++++')
 
-    UserOTP.objects.create(user=user, code=code)
+
+@shared_task
+def send_otp(mobile: str):
+    code = generate_otp()
+    logger.info(f'new mobile otp: {mobile = } {code = }')
+
+    OTP.objects.create(mobile=mobile, code=code)
 
     # headers = {
     #     'X-API-KEY': settings.SMS_API_KEY
     # }
     # data = {
-    #     'mobile':     user.mobile,
+    #     'mobile':     mobile,
     #     'templateId': settings.SMS_TEMPLATE_ID,
     #     'parameters': [
     #         {
     #             'name':  'code',
-    #             'value': str(code)
+    #             'value': code
     #         }
     #     ]
     # }

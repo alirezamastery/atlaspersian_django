@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny
 
 from users.models import *
 from users.api.public.serializers import *
-from users.tasks import send_otp_sms
+from users.tasks import send_otp
 
 
 __all__ = [
@@ -22,7 +22,7 @@ class ForgotPasswordSendOtpView(APIView):
         serializer.is_valid(raise_exception=True)
         mobile = serializer.validated_data.get('mobile')
         user = User.objects.get(mobile=mobile)
-        send_otp_sms.delay(user.id)
+        send_otp.delay(user.id)
         return Response({'info': 'verification code sent'}, status=status.HTTP_200_OK)
 
 

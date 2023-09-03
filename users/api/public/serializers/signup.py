@@ -9,91 +9,64 @@ from utils.drf.codes import *
 
 
 __all__ = [
-    'NewMobileOtpSerializer',
-    'SignupSerializer',
+    'MobileSerializer',
     'OtpVerifySerializer',
 ]
 
 
-class NewMobileOtpSerializer(serializers.Serializer):
+class MobileSerializer(serializers.Serializer):
     mobile = serializers.CharField()
 
     @staticmethod
     def validate_mobile(data):
-        if re.match(r'^09[\d]{9}$', data):
+        if re.match(r'^09\d{9}$', data):
             return data
         raise serializers.ValidationError({
             'code':    APIErrorCodes.INVALID_MOBILE.value,
             'message': 'invalid mobile'
         })
-
-    def validate(self, attrs):
-        mobile = attrs.get('mobile')
-        if User.objects.filter(mobile=mobile, is_active=True).exists():
-            raise serializers.ValidationError({
-                'code':    APIErrorCodes.MOBILE_ALREADY_EXISTS.value,
-                'message': 'user with this mobile exists'
-            })
-        return attrs
-
-
-class SignupSerializer(serializers.Serializer):
-    mobile = serializers.CharField()
-    password = serializers.CharField(
-        max_length=20,
-        min_length=6,
-        trim_whitespace=True
-    )
-
-    @staticmethod
-    def validate_mobile(data):
-        if re.match(r'^09[\d]{9}$', data):
-            return data
-        raise serializers.ValidationError({
-            'code':    APIErrorCodes.INVALID_MOBILE.value,
-            'message': 'invalid mobile'
-        })
-
-    def validate(self, attrs):
-        mobile = attrs.get('mobile')
-        if User.objects.filter(mobile=mobile, is_active=True).exists():
-            raise serializers.ValidationError({
-                'code':    APIErrorCodes.MOBILE_ALREADY_EXISTS.value,
-                'message': 'user with this mobile exists'
-            })
-        return attrs
-
-    def create(self, validated_data):
-        mobile = validated_data.get('mobile')
-        password = validated_data.get('password')  # TODO: change to otp login
-        User.objects.filter(mobile=mobile, is_active=False).delete()
-        user = User.objects.create_user(mobile=mobile, password=password)
-
-        return user
 
 
 class OtpVerifySerializer(serializers.Serializer):
     mobile = serializers.CharField()
-    code = serializers.IntegerField()
+    code = serializers.CharField()
+
+    @staticmethod
+    def validate_mobile(data):
+        if re.match(r'^09\d{9}$', data):
+            return data
+        raise serializers.ValidationError({
+            'code':    APIErrorCodes.INVALID_MOBILE.value,
+            'message': 'invalid mobile'
+        })
+
+    @staticmethod
+    def validate_otp(data):
+        if re.match(r'^\d{5,6}$', data):
+            return data
+        raise serializers.ValidationError({
+            'code':    APIErrorCodes.INVALID_OTP.value,
+            'message': 'invalid otp'
+        })
 
     def validate(self, attrs):
         mobile = attrs.get('mobile')
         code = attrs.get('code')
-        logger(f'validate: {mobile = } {code = }')
-        try:
-            otp = UserOTP.objects.select_related('user').get(user__mobile=mobile, code=code)
-            if dt.datetime.now() - otp.created_at > dt.timedelta(minutes=15):
-                raise serializers.ValidationError({
-                    'code':    APIErrorCodes.OTP_EXPIRED.value,
-                    'message': 'otp expired'
-                })
 
-        except UserOTP.DoesNotExist:
+        try:
+            otp = OTP.objects.get(mobile=mobile, code=code)
+        except OTP.DoesNotExist:
             raise serializers.ValidationError({
                 'code':    APIErrorCodes.INVALID_OTP.value,
                 'message': 'invalid otp'
             })
-
-        attrs['user'] = otp.user
+        print(otp.created_at)
+        print(dt.datetime.now())
+        print(dt.datetime.now(dt.timezone.utc) - otp.created_at)
+        if dt.datetime.now(dt.timezone.utc) - otp.created_at > dt.timedelta(minutes=15):
+            raise serializers.ValidationError({
+                'code':    APIErrorCodes.OTP_EXPIRED.value,
+                'message': 'otp expired'
+            })
 
         return attrs
