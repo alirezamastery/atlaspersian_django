@@ -27,5 +27,7 @@ urlpatterns = [
 router = DefaultRouter()
 
 router.register('addresses', AddressViewSetPublic, basename='addresses')
+router.register('provinces', ProvinceViewSetPublic, basename='provinces')
+router.register('cities', CityViewSetPublic, basename='cities')
 
 urlpatterns += router.urls

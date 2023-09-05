@@ -1,13 +1,15 @@
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet, GenericViewSet
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 from rest_framework import mixins
 
-from users.models import Address
+from users.models import *
 from users.api.public.serializers import *
 
 
 __all__ = [
-    'AddressViewSetPublic'
+    'AddressViewSetPublic',
+    'ProvinceViewSetPublic',
+    'CityViewSetPublic',
 ]
 
 
@@ -33,3 +35,13 @@ class AddressViewSetPublic(mixins.CreateModelMixin,
             return AddressUpdateSerializerPublic
 
         return AddressCreateSerializerPublic
+
+
+class ProvinceViewSetPublic(ReadOnlyModelViewSet):
+    queryset = Province.objects.all().order_by('id')
+    serializer_class = ProvinceReadSerializerPublic
+
+
+class CityViewSetPublic(ReadOnlyModelViewSet):
+    queryset = City.objects.all().order_by('id')
+    serializer_class = CityReadSerializerPublic

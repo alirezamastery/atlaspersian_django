@@ -13,7 +13,6 @@ class AddressCreateSerializerPublic(serializers.ModelSerializer):
     class Meta:
         model = Address
         fields = [
-            'user',
             'title',
             'province',
             'city',
