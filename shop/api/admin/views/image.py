@@ -29,7 +29,7 @@ class ImageViewSetAdmin(ModelViewSet):
         if len(parts) == 0:
             return Response({'error': 'no file extension'}, status=400)
         extension = parts[-1]
-        if extension not in ['jpg', 'JPEG', 'jpeg', 'png']:
+        if extension.lower() not in ['jpg', 'jpeg', 'png']:
             return Response({'error': 'unacceptable file format for image'}, status=400)
 
         new_name = f'{uuid.uuid4().hex}.{extension}'

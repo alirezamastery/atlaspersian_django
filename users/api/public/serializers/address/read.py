@@ -10,18 +10,6 @@ __all__ = [
 ]
 
 
-class AddressReadSerializerPublic(serializers.ModelSerializer):
-    class Meta:
-        model = Address
-        fields = [
-            'title',
-            'postal_code',
-            'province',
-            'city',
-            'details',
-        ]
-
-
 class ProvinceReadSerializerPublic(serializers.ModelSerializer):
     class Meta:
         model = Province
@@ -38,4 +26,20 @@ class CityReadSerializerPublic(serializers.ModelSerializer):
             'id',
             'province',
             'title',
+        ]
+
+
+class AddressReadSerializerPublic(serializers.ModelSerializer):
+    province = ProvinceReadSerializerPublic(read_only=True)
+    city = CityReadSerializerPublic(read_only=True)
+
+    class Meta:
+        model = Address
+        fields = [
+            'id',
+            'title',
+            'postal_code',
+            'province',
+            'city',
+            'details',
         ]

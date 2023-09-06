@@ -4,6 +4,7 @@ from rest_framework import mixins
 
 from users.models import *
 from users.api.public.serializers import *
+from users.api.public.filters.citiy import CityFilterPublic
 
 
 __all__ = [
@@ -30,18 +31,17 @@ class AddressViewSetPublic(mixins.CreateModelMixin,
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
             return AddressReadSerializerPublic
-
-        elif self.request.method == 'PATCH':
-            return AddressUpdateSerializerPublic
-
-        return AddressCreateSerializerPublic
+        return AddressWriteSerializerPublic
 
 
 class ProvinceViewSetPublic(ReadOnlyModelViewSet):
     queryset = Province.objects.all().order_by('id')
     serializer_class = ProvinceReadSerializerPublic
+    pagination_class = None
 
 
 class CityViewSetPublic(ReadOnlyModelViewSet):
     queryset = City.objects.all().order_by('id')
     serializer_class = CityReadSerializerPublic
+    filterset_class = CityFilterPublic
+    pagination_class = None
