@@ -14,7 +14,7 @@ class Command(BaseCommand):
         for row in data:
             p_title = row['province']
             print(p_title)
-            province = Province.objects.get_or_create(title=p_title)
+            province = Province.objects.create(title=p_title)
             for city in row['cities']:
                 print(city)
-                City.objects.get_or_create(province=province, title=city)
+                City.objects.create(province=province, title=city)

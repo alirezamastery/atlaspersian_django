@@ -26,11 +26,9 @@ def test_task():
 
 
 @shared_task
-def send_otp(mobile: str):
-    code = generate_otp()
+def send_otp(mobile: str, code: str):
     logger.info(f'new mobile otp: {mobile = } {code = }')
 
-    OTP.objects.create(mobile=mobile, code=code)
 
     # headers = {
     #     'X-API-KEY': settings.SMS_API_KEY
