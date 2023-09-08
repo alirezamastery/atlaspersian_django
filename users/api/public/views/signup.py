@@ -10,6 +10,7 @@ from users.models import *
 from users.api.public.serializers import *
 from users.tasks import *
 from utils.logging import logger
+from utils.otp import generate_otp
 
 
 __all__ = [
@@ -34,7 +35,10 @@ class SendAuthenticationOtpView(APIView):
         except User.DoesNotExist:
             pass
 
-        send_otp.delay(mobile)
+        code = generate_otp()
+        print(f'{code = }')
+        OTP.objects.create(mobile=mobile, code=code)
+        # send_otp.delay(mobile)
 
         return Response(response)
 
