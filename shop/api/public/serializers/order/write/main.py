@@ -2,8 +2,8 @@ from django.db.models import Prefetch
 from rest_framework import serializers
 
 from shop.models import *
-from .sub import *
-from ..read.main import OrderReadSerializerPublic
+from ..read.main import OrderDetailSerializerPublic
+from ._sub import _OrderItemWriteSerializer
 
 
 __all__ = [
@@ -16,29 +16,49 @@ class OrderWriteSerializerPublic(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['user', 'items']
+        fields = ['items']
 
     def create(self, validated_data):
-        user = validated_data['user']
-        items = validated_data['items']
+        request = self.context.get('request')
 
-        price_sum = sum(item['quantity'] * item['variant'].price for item in items)
-        order = Order.objects.create(user=user, price_sum=price_sum)
+        items = validated_data['items']
+        pay_method = validated_data['pay_method']
+        address = validated_data['pay_method']
+
+        pay_amount = sum(item['quantity'] * item['variant'].price for item in items)
+        order = Order.objects.create(
+            user=request.user,
+            pay_amount=pay_amount,
+            pay_method=pay_method,
+            address=address
+        )
 
         for item in items:
+            variant = item['variant']
+            quantity = item['quantity']
             OrderItem.objects.create(
                 order=order,
-                item=item['variant'],
-                price=item['variant'].price,
-                quantity=item['quantity']
+                item=variant,
+                price=variant.price,
+                quantity=quantity
             )
+            variant.inventory = variant.inventory - quantity
+            variant.save()
 
-        order = Order.objects \
-            .select_related('user') \
-            .prefetch_related(Prefetch('items', queryset=OrderItem.objects.all())) \
-            .get(id=order.id)
+        prefetch_items = Prefetch(
+            'items',
+            queryset=OrderItem.objects.all()
+            .select_related('item__product__brand')
+            .order_by('id')
+        )
+        order = (Order.objects
+                 .select_related('pay_method')
+                 .select_related('address__province')
+                 .select_related('address__city')
+                 .prefetch_related(prefetch_items)
+                 .get(id=order.id))
 
         return order
 
     def to_representation(self, instance: Order) -> dict:
-        return OrderReadSerializerPublic(instance).data
+        return OrderDetailSerializerPublic(instance).data

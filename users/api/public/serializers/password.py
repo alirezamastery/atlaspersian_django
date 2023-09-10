@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from users.models import *
-from utils.drf.codes import *
+from utils.drf.error_codes import *
 
 
 __all__ = [

@@ -12,3 +12,6 @@ class APIErrorCodes(Enum):
     MOBILE_NOT_REGISTERED = 3
     INVALID_OTP = 4
     OTP_EXPIRED = 5
+
+    INVALID_VARIANT_QUANTITY = 6
+

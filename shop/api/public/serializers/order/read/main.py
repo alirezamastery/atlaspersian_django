@@ -1,17 +1,42 @@
 from rest_framework import serializers
 
 from shop.models import *
-from .sub import *
+from ._sub import _OrderItemSerializer, _PaymentMethodSerializer, _AddressSerializer
 
 
 __all__ = [
-    'OrderReadSerializerPublic',
+    'OrderListSerializerPublic',
+    'OrderDetailSerializerPublic',
 ]
 
 
-class OrderReadSerializerPublic(serializers.ModelSerializer):
-    items = _OrderItemReadSerializer(read_only=True, many=True)
+class OrderListSerializerPublic(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = [
+            'number',
+            'status',
+            'pay_method',
+            'pay_amount',
+            'address',
+            'is_verified',
+        ]
+
+
+class OrderDetailSerializerPublic(serializers.ModelSerializer):
+    pay_method = _PaymentMethodSerializer(read_only=True)
+    address = _AddressSerializer(read_only=True)
+
+    items = _OrderItemSerializer(read_only=True, many=True)
 
     class Meta:
         model = Order
-        fields = ['id', 'user', 'price_sum', 'items', 'is_canceled']
+        fields = [
+            'number',
+            'status',
+            'pay_method',
+            'pay_amount',
+            'address',
+            'is_verified',
+            'items'
+        ]

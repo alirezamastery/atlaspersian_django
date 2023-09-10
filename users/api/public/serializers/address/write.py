@@ -17,7 +17,7 @@ class AddressWriteSerializerPublic(serializers.ModelSerializer):
             'postal_code',
             'province',
             'city',
-            'details',
+            'address',
         ]
 
     def create(self, validated_data):

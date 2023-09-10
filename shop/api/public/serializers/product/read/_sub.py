@@ -1,18 +1,10 @@
 from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
 
 from shop.models import *
 
 
-__all__ = [
-    '_BrandSerializer',
-    '_ImageSerializer',
-    '_AttributeValueSerializer',
-    '_VariantSerializer',
-    '_CategorySerializer',
-]
-
-
-class _BrandSerializer(serializers.ModelSerializer):
+class _BrandSerializer(ModelSerializer):
     class Meta:
         model = Brand
         fields = ['title']
@@ -42,8 +34,8 @@ class _ImageSerializer(serializers.HyperlinkedModelSerializer):
         return url
 
 
-class _AttributeValueSerializer(serializers.ModelSerializer):
-    class _AttributeSerializer(serializers.ModelSerializer):
+class _AttributeValueSerializer(ModelSerializer):
+    class _AttributeSerializer(ModelSerializer):
         class Meta:
             model = Attribute
             fields = ['title', 'description', 'type', 'unit']
@@ -55,13 +47,13 @@ class _AttributeValueSerializer(serializers.ModelSerializer):
         fields = ['attribute', 'value', 'extra_info']
 
 
-class _SelectorTypeSerializer(serializers.ModelSerializer):
+class _SelectorTypeSerializer(ModelSerializer):
     class Meta:
         model = SelectorType
         fields = ['title', 'code']
 
 
-class _SelectorValueSerializer(serializers.ModelSerializer):
+class _SelectorValueSerializer(ModelSerializer):
     type = _SelectorTypeSerializer(read_only=True)
 
     class Meta:
@@ -74,7 +66,7 @@ class _SelectorValueSerializer(serializers.ModelSerializer):
         ]
 
 
-class _ProductSerializer(serializers.ModelSerializer):
+class _ProductSerializer(ModelSerializer):
     class Meta:
         model = Product
         fields = [
@@ -84,7 +76,7 @@ class _ProductSerializer(serializers.ModelSerializer):
         ]
 
 
-class _VariantSerializer(serializers.ModelSerializer):
+class _VariantSerializer(ModelSerializer):
     selector_value = _SelectorValueSerializer(read_only=True)
     product = _ProductSerializer(read_only=True)
 
@@ -100,7 +92,7 @@ class _VariantSerializer(serializers.ModelSerializer):
         ]
 
 
-class _CategorySerializer(serializers.ModelSerializer):
+class _CategorySerializer(ModelSerializer):
     selector_type = _SelectorTypeSerializer(read_only=True)
 
     class Meta:
