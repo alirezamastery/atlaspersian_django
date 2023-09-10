@@ -25,15 +25,14 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
         return ProductDetailSerializerPublic
 
     def get_queryset(self):
-        prefetch_variants = Prefetch(
-            'variants',
-            queryset=Variant.objects
-            .filter(is_active=True)
-            .select_related('selector_value__type')
-            .order_by('id')
-        )
-
         if self.action == 'list':
+            prefetch_variants = Prefetch(
+                'variants',
+                queryset=Variant.objects
+                .filter(is_active=True)
+                .select_related('selector_value__type')
+                .order_by('id')
+            )
             total_inv_subq = (Variant.objects
                               .values('product_id')
                               .filter(product=OuterRef('id'), is_active=True)
@@ -57,10 +56,18 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
             'attribute_values',
             queryset=ProductAttributeValue.objects.select_related('attribute')
         )
+        prefetch_variants_detail = Prefetch(
+            'variants',
+            queryset=Variant.objects
+            .filter(is_active=True)
+            .select_related('selector_value__type')
+            .select_related('product')
+            .order_by('id')
+        )
         return (Product.objects
                 .select_related('brand')
-                .select_related('category')
-                .prefetch_related(prefetch_variants)
+                .select_related('category__selector_type')
+                .prefetch_related(prefetch_variants_detail)
                 .prefetch_related(prefetch_attrs)
                 .filter(is_active=True)
                 .order_by('-created_at'))

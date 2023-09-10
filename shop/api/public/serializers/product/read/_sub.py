@@ -55,12 +55,13 @@ class _AttributeValueSerializer(serializers.ModelSerializer):
         fields = ['attribute', 'value', 'extra_info']
 
 
-class _SelectorValueSerializer(serializers.ModelSerializer):
-    class _SelectorTypeSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = SelectorType
-            fields = ['title', 'code']
+class _SelectorTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SelectorType
+        fields = ['title', 'code']
 
+
+class _SelectorValueSerializer(serializers.ModelSerializer):
     type = _SelectorTypeSerializer(read_only=True)
 
     class Meta:
@@ -73,8 +74,19 @@ class _SelectorValueSerializer(serializers.ModelSerializer):
         ]
 
 
+class _ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = [
+            'title',
+            'description',
+            'thumbnail',
+        ]
+
+
 class _VariantSerializer(serializers.ModelSerializer):
     selector_value = _SelectorValueSerializer(read_only=True)
+    product = _ProductSerializer(read_only=True)
 
     class Meta:
         model = Variant
@@ -89,6 +101,8 @@ class _VariantSerializer(serializers.ModelSerializer):
 
 
 class _CategorySerializer(serializers.ModelSerializer):
+    selector_type = _SelectorTypeSerializer(read_only=True)
+
     class Meta:
         model = Category
         fields = ['id', 'title', 'selector_type']

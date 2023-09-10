@@ -37,12 +37,13 @@ class ProductFilterPublic(filters.FilterSet):
     # pmin = filters.NumberFilter(method='price_min_filter')
     # pmax = filters.NumberFilter(method='price_max_filter')
     is_av = filters.BooleanFilter(method='is_available')
+    category = filters.NumberFilter(field_name='category_id')
 
-    o = CustomOrderingFilter(fields=['n', 'p', '-p', 'l'])  # map: newest price -price liked
+    o = CustomOrderingFilter(fields=['n', 'p', '-p', 'l', 'd'])  # map: newest price -price liked discount
 
     class Meta:
         model = Product
-        fields = ['q', 'pmax', 'pmin', 'is_av']
+        fields = ['q', 'pmax', 'pmin', 'is_av', 'category']
 
     def search_in_fields(self, qs, name, value):
         return qs.filter(Q(title__icontains=value) | Q(brand__title=value))

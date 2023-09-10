@@ -21,9 +21,9 @@ class Order(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     number = models.PositiveBigIntegerField(default=109010, unique=True)
     user = models.ForeignKey('users.User', on_delete=models.PROTECT, related_name='shop_orders')
-    price_sum = models.PositiveBigIntegerField()
     status = models.CharField(max_length=255, choices=Status.choices, default=Status.PENDING_PAYMENT)
     pay_method = models.ForeignKey('shop.PaymentMethod', on_delete=models.PROTECT, related_name='orders')
+    pay_amount = models.PositiveBigIntegerField()
     address = models.ForeignKey('users.Address', on_delete=models.PROTECT, related_name='orders')
 
     is_verified = models.BooleanField(default=False)
