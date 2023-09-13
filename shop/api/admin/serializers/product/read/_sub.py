@@ -19,7 +19,8 @@ class _ImageSerializer(serializers.ModelSerializer):
             'product',
             'url',
             'is_main',
-            'description'
+            'description',
+            'alt',
         ]
 
     def get_absolute_url(self, obj):

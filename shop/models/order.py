@@ -25,6 +25,8 @@ class Order(models.Model):
     pay_method = models.ForeignKey('shop.PaymentMethod', on_delete=models.PROTECT, related_name='orders')
     pay_amount = models.PositiveBigIntegerField()
     address = models.ForeignKey('users.Address', on_delete=models.PROTECT, related_name='orders')
+    ship_method = models.ForeignKey('shop.ShippingMethod', on_delete=models.PROTECT, related_name='orders')
+    user_note = models.TextField(default='', blank=True)
 
     is_verified = models.BooleanField(default=False)
 

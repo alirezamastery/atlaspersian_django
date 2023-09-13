@@ -5,3 +5,4 @@ from .media import *
 from .category import *
 from .order import *
 from .payment import *
+from .shipping import *

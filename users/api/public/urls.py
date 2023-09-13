@@ -21,7 +21,7 @@ urlpatterns = [
 
     path('user-info/', UserInfoView.as_view(), name='user-info'),
     path('user-addresses/', UserAddressListView.as_view(), name='user-addresses'),
-    # path('profile/', ProfileViewPublic.as_view(), name='user-profile-public'),
+    path('profile/', ProfileViewPublic.as_view(), name='user-profile-public'),
 ]
 
 router = DefaultRouter()

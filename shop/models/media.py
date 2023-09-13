@@ -11,6 +11,7 @@ class ProductImage(models.Model):
     file = models.ImageField(upload_to='product/img')
     is_main = models.BooleanField(default=False)
     description = models.TextField(default='', blank=True)
+    alt = models.CharField(max_length=255, default='')
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)

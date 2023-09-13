@@ -16,7 +16,7 @@ class ProfileReadSerializerPublic(serializers.ModelSerializer):
         fields = [
             'first_name',
             'last_name',
-            'avatar'
+            'avatar',
             'social_id',
             'birth_date',
         ]

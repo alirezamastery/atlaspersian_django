@@ -37,6 +37,7 @@ class OrderDetailSerializerPublic(serializers.ModelSerializer):
             'pay_method',
             'pay_amount',
             'address',
+            'user_note',
             'is_verified',
             'items'
         ]

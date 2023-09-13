@@ -20,6 +20,8 @@ class _ProductAttributeValueWriteSerializer(serializers.Serializer):
 class _NewProductImageWriteSerializer(serializers.Serializer):
     file = serializers.CharField()
     is_main = serializers.BooleanField()
+    description = serializers.CharField(allow_blank=True)
+    alt = serializers.CharField(allow_blank=True)
 
     def update(self, instance, validated_data):
         pass

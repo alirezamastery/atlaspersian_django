@@ -124,7 +124,13 @@ class ProductWriteSerializerAdmin(serializers.ModelSerializer):
             is_main = img['is_main']
             if file.startswith('/media/'):
                 file = file.replace('/media/', '/', 1)
-            ProductImage.objects.create(file=file, product=product, is_main=is_main)
+            ProductImage.objects.create(
+                file=file,
+                product=product,
+                is_main=is_main,
+                description=img.get('description', ''),
+                alt=img.get('alt', ''),
+            )
             if is_main:
                 product.thumbnail = file
                 product.save()

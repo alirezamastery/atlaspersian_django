@@ -16,7 +16,12 @@ class OrderWriteSerializerPublic(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['items']
+        fields = [
+            'pay_method'
+            'address',
+            'user_note',
+            'items',
+        ]
 
     def create(self, validated_data):
         request = self.context.get('request')
