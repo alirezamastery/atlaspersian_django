@@ -27,5 +27,4 @@ class CategoryViewSetPublic(ReadOnlyModelViewSet):
     @action(detail=False, methods=['GET'], url_path='get-tree')
     def get_tree(self, request):
         tree_structure = Category.dump_bulk_custom()
-        return Response({'tree': tree_structure})
-
+        return Response(tree_structure)

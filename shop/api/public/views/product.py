@@ -54,7 +54,7 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
 
         prefetch_attrs = Prefetch(
             'attribute_values',
-            queryset=ProductAttributeValue.objects.select_related('attribute')
+            queryset=ProductAttributeValue.objects.select_related('attribute__unit')
         )
         prefetch_variants_detail = Prefetch(
             'variants',

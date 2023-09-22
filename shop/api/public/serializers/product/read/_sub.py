@@ -34,27 +34,36 @@ class _ImageSerializer(serializers.HyperlinkedModelSerializer):
         return url
 
 
-class _AttributeValueSerializer(ModelSerializer):
-    class _AttributeSerializer(ModelSerializer):
-        class Meta:
-            model = Attribute
-            fields = ['title', 'description', 'type', 'unit']
+class _AttributeUnit(ModelSerializer):
+    class Meta:
+        model = AttributeUnit
+        fields = ['title']
 
-    attribute = _AttributeSerializer(read_only=True)
+
+class _Attribute(ModelSerializer):
+    unit = _AttributeUnit(read_only=True)
+
+    class Meta:
+        model = Attribute
+        fields = ['title', 'description', 'type', 'unit']
+
+
+class _AttributeValueSerializer(ModelSerializer):
+    attribute = _Attribute(read_only=True)
 
     class Meta:
         model = ProductAttributeValue
         fields = ['attribute', 'value', 'extra_info']
 
 
-class _SelectorTypeSerializer(ModelSerializer):
+class _SelectorType(ModelSerializer):
     class Meta:
         model = SelectorType
         fields = ['title', 'code']
 
 
 class _SelectorValueSerializer(ModelSerializer):
-    type = _SelectorTypeSerializer(read_only=True)
+    type = _SelectorType(read_only=True)
 
     class Meta:
         model = SelectorValue
@@ -66,7 +75,7 @@ class _SelectorValueSerializer(ModelSerializer):
         ]
 
 
-class _ProductSerializer(ModelSerializer):
+class _Product(ModelSerializer):
     class Meta:
         model = Product
         fields = [
@@ -78,7 +87,7 @@ class _ProductSerializer(ModelSerializer):
 
 class _VariantSerializer(ModelSerializer):
     selector_value = _SelectorValueSerializer(read_only=True)
-    product = _ProductSerializer(read_only=True)
+    product = _Product(read_only=True)
 
     class Meta:
         model = Variant
@@ -93,7 +102,7 @@ class _VariantSerializer(ModelSerializer):
 
 
 class _CategorySerializer(ModelSerializer):
-    selector_type = _SelectorTypeSerializer(read_only=True)
+    selector_type = _SelectorType(read_only=True)
 
     class Meta:
         model = Category
