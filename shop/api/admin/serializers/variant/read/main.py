@@ -26,4 +26,5 @@ class VariantReadSerializerAdmin(serializers.ModelSerializer):
             'price',
             'inventory',
             'max_in_order',
+            'discount',
         ]

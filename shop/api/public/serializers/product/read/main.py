@@ -36,6 +36,7 @@ class ProductListSerializerPublic(serializers.ModelSerializer):
             'category',
             'variants',
             'price_min',
+            'score',
         ]
 
 

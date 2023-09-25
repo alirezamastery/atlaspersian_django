@@ -2,12 +2,13 @@ from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
 from shop.models import *
+from shop.api.public.serializers import UserReadSerializerPublic
 
 
 class _BrandSerializer(ModelSerializer):
     class Meta:
         model = Brand
-        fields = ['title']
+        fields = ['id', 'title']
 
 
 class _ImageSerializer(serializers.HyperlinkedModelSerializer):
@@ -98,6 +99,7 @@ class _VariantSerializer(ModelSerializer):
             'price',
             'inventory',
             'max_in_order',
+            'discount',
         ]
 
 
@@ -107,3 +109,28 @@ class _CategorySerializer(ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'title', 'selector_type']
+
+
+class _CommentSerializer(ModelSerializer):
+    user = UserReadSerializerPublic(read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = [
+            'user',
+            'text',
+            'created_at',
+        ]
+
+
+class _QuestionSerializer(ModelSerializer):
+    user = UserReadSerializerPublic(read_only=True)
+
+    class Meta:
+        model = Question
+        fields = [
+            'user',
+            'question',
+            'answer',
+            'created_at',
+        ]

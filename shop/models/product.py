@@ -1,19 +1,12 @@
 from django.db import models
+from django.core.validators import MaxValueValidator
 from utils.slug import unique_slugify
 
 
 __all__ = [
-    'Brand',
     'Product',
     'ProductAttributeValue',
 ]
-
-
-class Brand(models.Model):
-    title = models.CharField(max_length=255, unique=True)
-
-    def __str__(self):
-        return f'{self.title}'
 
 
 class Product(models.Model):
@@ -27,6 +20,7 @@ class Product(models.Model):
     is_active = models.BooleanField(default=True, blank=True)
     slug = models.SlugField(unique=True, editable=False, blank=True)
     thumbnail = models.ImageField(upload_to='product/thumbnail')
+    score = models.PositiveSmallIntegerField(default=5, validators=[MaxValueValidator(5)])
 
     category = models.ForeignKey(
         'shop.Category',

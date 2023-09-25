@@ -4,7 +4,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from shop.models import *
-from shop.api.admin.serializers import *
+from shop.api.admin.serializers.category.read.main import *
+from shop.api.admin.serializers.category.write import *
 from shop.api.admin.filters import CategoryFilterAdmin
 from utils.drf.permissions import IsAdmin
 

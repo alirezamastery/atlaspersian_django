@@ -7,6 +7,7 @@ from treebeard.mp_tree import get_result_class
 __all__ = [
     'Category',
     'CategoryAttribute',
+    'CategoryBrand',
 ]
 
 
@@ -22,6 +23,14 @@ class Category(MP_Node):
         through='shop.CategoryAttribute',
         related_name='product_categories'
     )
+    brands = models.ManyToManyField(
+        'shop.Brand',
+        through='shop.CategoryBrand',
+        related_name='categories'
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    updated_at = models.DateTimeField(auto_now=True)
 
     node_order_by = ['title']
 
@@ -60,7 +69,7 @@ class Category(MP_Node):
 
             newobj = {
                 # 'data': fields,
-                'title': fields['title'],
+                'title':         fields['title'],
                 'selector_type': fields['selector_type']
             }
             if keep_ids:
@@ -82,10 +91,29 @@ class CategoryAttribute(models.Model):
     category = models.ForeignKey('shop.Category', on_delete=models.CASCADE)
     attribute = models.ForeignKey('shop.Attribute', on_delete=models.CASCADE)
 
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    updated_at = models.DateTimeField(auto_now=True)
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
                 fields=['category', 'attribute'],
                 name='unique_category_attribute'
+            )
+        ]
+
+
+class CategoryBrand(models.Model):
+    category = models.ForeignKey('shop.Category', on_delete=models.CASCADE)
+    brand = models.ForeignKey('shop.Brand', on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['brand', 'category'],
+                name='unique_category_brand'
             )
         ]

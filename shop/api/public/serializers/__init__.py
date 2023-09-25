@@ -1,3 +1,5 @@
+from users.api.public.serializers.user.read.main import UserReadSerializerPublic
+
 from .brand import *
 from .category import *
 

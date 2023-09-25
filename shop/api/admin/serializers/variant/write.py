@@ -23,6 +23,7 @@ class VariantCreateSerializer(serializers.ModelSerializer):
             'price',
             'inventory',
             'max_in_order',
+            'discount',
         ]
         validators = [
             UniqueTogetherValidator(

@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MaxValueValidator
 
 
 __all__ = [
@@ -24,6 +25,7 @@ class Variant(models.Model):
     price = models.PositiveBigIntegerField()
     inventory = models.PositiveIntegerField()
     max_in_order = models.PositiveIntegerField()
+    discount = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(99)])
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)

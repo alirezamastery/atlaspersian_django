@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from shop.models import *
-from .read import ProductCategoryDetailSerializer
+from .read.main import ProductCategoryDetailSerializer
 
 
 __all__ = [
@@ -18,11 +18,19 @@ class ProductCategoryWriteSerializer(serializers.Serializer):
         allow_empty=True,
         default=[]
     )
+    brands = serializers.ListSerializer(
+        child=serializers.PrimaryKeyRelatedField(queryset=Brand.objects.all()),
+        allow_empty=True,
+        default=[]
+    )
 
     class Meta:
         fields = ['title', 'parent', 'selector_type', 'attributes']
 
     def create(self, validated_data):
+        attr_ids = set(attr.id for attr in validated_data.pop('attributes'))
+        brand_ids = set(brand.id for brand in validated_data.pop('brands'))
+
         parent_node = validated_data['parent']
         child_data = {
             'title':         validated_data['title'],
@@ -33,9 +41,11 @@ class ProductCategoryWriteSerializer(serializers.Serializer):
         else:
             category = parent_node.add_child(**child_data)
 
-        attr_ids = set(attr.id for attr in validated_data['attributes'])
         for attr_id in attr_ids:
             CategoryAttribute.objects.create(category=category, attribute_id=attr_id)
+
+        for brand_id in brand_ids:
+            CategoryBrand.objects.create(category=category, brand_id=brand_id)
 
         return category
 
@@ -50,6 +60,13 @@ class ProductCategoryWriteSerializer(serializers.Serializer):
             elif not parent_node.id == category.id:
                 category.move(parent_node, pos='sorted-child')
 
+        self.handle_attributes(category, validated_data)
+        self.handle_brands(category, validated_data)
+
+        return category
+
+    @staticmethod
+    def handle_attributes(category, validated_data):
         current_attrs = CategoryAttribute.objects.filter(category=category)
         current_attr_ids = set(attr.attribute_id for attr in current_attrs)
         request_attr_ids = set(attr.id for attr in validated_data.get('attributes', []))
@@ -68,7 +85,7 @@ class ProductCategoryWriteSerializer(serializers.Serializer):
 
         for removed_attr_id in removed_attr_ids:
             try:
-                CategoryAttribute.objects.get(attribute_id=removed_attr_id).delete()
+                CategoryAttribute.objects.get(category=category, attribute_id=removed_attr_id).delete()
             except CategoryAttribute.DoesNotExist:
                 pass
             for product in category.products.all():
@@ -77,7 +94,31 @@ class ProductCategoryWriteSerializer(serializers.Serializer):
                 except ProductAttributeValue.DoesNotExist:
                     pass
 
-        return category
+    @staticmethod
+    def handle_brands(category, validated_data):
+        current_brands = CategoryBrand.objects.filter(category=category)
+        current_brand_ids = set(cat_brands.brand_id for cat_brands in current_brands)
+        request_brand_ids = set(brand.id for brand in validated_data.get('brands', []))
+        new_brand_ids = request_brand_ids - current_brand_ids
+        removed_brand_ids = current_brand_ids - request_brand_ids
+
+        for new_brand_id in new_brand_ids:
+            CategoryBrand.objects.create(category=category, brand_id=new_brand_id)
+
+        for removed_brand_id in removed_brand_ids:
+            try:
+                CategoryBrand.objects.get(category=category, brand_id=removed_brand_id).delete()
+            except CategoryBrand.DoesNotExist:
+                pass
+
+    def save(self, **kwargs):
+        instance = super().save(**kwargs)
+
+        self.instance = (Category.objects
+                         .prefetch_related('attributes__unit')
+                         .prefetch_related('brands')
+                         .get(id=instance.id))
+        return self.instance
 
     def to_representation(self, category):
         return ProductCategoryDetailSerializer(category).data

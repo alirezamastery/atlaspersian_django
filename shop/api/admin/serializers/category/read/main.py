@@ -3,18 +3,16 @@ from drf_spectacular.utils import extend_schema_field
 from drf_spectacular.types import OpenApiTypes
 
 from shop.models import *
+from ._sub import (
+    _AttributeSerializer,
+    _BrandSerializer
+)
 
 
 __all__ = [
     'ProductCategoryListSerializer',
     'ProductCategoryDetailSerializer',
 ]
-
-
-class _AttributeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Attribute
-        fields = ['id', 'title', 'description', 'type']
 
 
 class ProductCategoryListSerializer(serializers.ModelSerializer):
@@ -25,11 +23,20 @@ class ProductCategoryListSerializer(serializers.ModelSerializer):
 
 class ProductCategoryDetailSerializer(serializers.ModelSerializer):
     parent_node_id = serializers.SerializerMethodField('get_parent_node_id')
-    attributes = serializers.SerializerMethodField('get_attributes')
+    # attributes = serializers.SerializerMethodField('get_attributes')
+    attributes = _AttributeSerializer(read_only=True, many=True)
+    brands = _BrandSerializer(read_only=True, many=True)
 
     class Meta:
         model = Category
-        fields = ['id', 'title', 'selector_type', 'parent_node_id', 'attributes']
+        fields = [
+            'id',
+            'title',
+            'selector_type',
+            'parent_node_id',
+            'attributes',
+            'brands'
+        ]
 
     @extend_schema_field(OpenApiTypes.INT)
     def get_parent_node_id(self, obj: Category):

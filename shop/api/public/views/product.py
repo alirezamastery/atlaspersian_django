@@ -26,6 +26,12 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         if self.action == 'list':
+            filters = {}
+
+            brand_ids = self.request.query_params.getlist('brands[]')
+            if brand_ids:
+                filters['brand__id__in'] = brand_ids
+
             prefetch_variants = Prefetch(
                 'variants',
                 queryset=Variant.objects
@@ -47,7 +53,7 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
                     .select_related('brand')
                     .select_related('category')
                     .prefetch_related(prefetch_variants)
-                    .filter(is_active=True)
+                    .filter(is_active=True, **filters)
                     .annotate(total_inventory=Coalesce(Subquery(total_inv_subq), Value(0)))
                     .annotate(price_min=Coalesce(Subquery(price_min_subq), Value(0)))
                     .order_by('-created_at'))
@@ -72,8 +78,8 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
                 .filter(is_active=True)
                 .order_by('-created_at'))
 
-    @action(detail=False, methods=['GET'], url_path='get-price-range')
-    def get_price_range(self, request):
+    @action(detail=False, methods=['GET'], url_path='filter-config')
+    def get_filter_config(self, request):
         min_price_subq = (Variant.objects
                           .values('product_id')
                           .filter(product=OuterRef('id'))
@@ -94,8 +100,20 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
                      .annotate(price_max=Subquery(max_price_subq))
                      .aggregate(max=Max('price_max'))['max'] or 0)
 
+        category_id = request.query_params.get('cat_id', '')
+        print(f'{category_id = }')
+        if category_id and category_id.isnumeric():
+            try:
+                category = Category.objects.get(id=category_id)
+                brands = category.brands.all()
+            except Category.DoesNotExist:
+                brands = Brand.objects.all()
+        else:
+            brands = Brand.objects.all()
+
         response = {
-            'min': price_min,
-            'max': price_max,
+            'min':    price_min,
+            'max':    price_max,
+            'brands': BrandReadSerializerPublic(brands, many=True).data
         }
         return Response(response)

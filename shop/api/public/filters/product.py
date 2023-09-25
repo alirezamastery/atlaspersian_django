@@ -46,7 +46,7 @@ class ProductFilterPublic(filters.FilterSet):
         fields = ['q', 'pmax', 'pmin', 'is_av', 'cat_id']
 
     def search_in_fields(self, qs, name, value):
-        return qs.filter(Q(title__icontains=value) | Q(brand__title=value))
+        return qs.filter(Q(title__icontains=value) | Q(brand__title__icontains=value))
 
     def is_available(self, qs, name, value):
         if value:
@@ -62,3 +62,4 @@ class ProductFilterPublic(filters.FilterSet):
         if value > -1:
             return qs.filter(price_min__lte=value)
         return qs
+
