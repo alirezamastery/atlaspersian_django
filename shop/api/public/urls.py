@@ -17,5 +17,6 @@ router.register('products', ProductViewSetPublic, basename='products')
 router.register('orders', OrderViewSetPublic, basename='orders')
 router.register('pay-methods', PaymentMethodViewSetPublic, basename='pay-methods')
 router.register('shipping-methods', ShippingMethodViewSetPublic, basename='shipping-methods')
+router.register('questions', QuestionViewSetPublic, basename='questions')
 
 urlpatterns += router.urls

@@ -1,4 +1,4 @@
-from users.api.public.serializers.user.read.main import UserReadSerializerPublic
+from users.api.public.serializers.user.read.main import UserReadSerializerPublic, UserPublicInfoSerializer
 
 from .brand import *
 from .category import *

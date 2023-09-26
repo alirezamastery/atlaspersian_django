@@ -1,16 +1,17 @@
-from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
 
 from users.models import User
 
-from ._sub import _ProfileSerializer
+from ._sub import _ProfileSerializer, _ProfilePublicInfoSerializer
 
 
 __all__ = [
-    'UserReadSerializerPublic'
+    'UserReadSerializerPublic',
+    'UserPublicInfoSerializer',
 ]
 
 
-class UserReadSerializerPublic(serializers.ModelSerializer):
+class UserReadSerializerPublic(ModelSerializer):
     profile = _ProfileSerializer(read_only=True)
 
     class Meta:
@@ -18,4 +19,14 @@ class UserReadSerializerPublic(serializers.ModelSerializer):
         fields = [
             'mobile',
             'profile',
+        ]
+
+
+class UserPublicInfoSerializer(ModelSerializer):
+    profile = _ProfilePublicInfoSerializer(read_only=True)
+
+    class Meta:
+        model = User
+        fields = [
+            'profile'
         ]

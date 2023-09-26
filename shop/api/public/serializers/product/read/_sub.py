@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
 from shop.models import *
-from shop.api.public.serializers import UserReadSerializerPublic
+from shop.api.public.serializers import UserPublicInfoSerializer
 
 
 class _BrandSerializer(ModelSerializer):
@@ -112,7 +112,7 @@ class _CategorySerializer(ModelSerializer):
 
 
 class _CommentSerializer(ModelSerializer):
-    user = UserReadSerializerPublic(read_only=True)
+    user = UserPublicInfoSerializer(read_only=True)
 
     class Meta:
         model = Comment
@@ -124,7 +124,7 @@ class _CommentSerializer(ModelSerializer):
 
 
 class _QuestionSerializer(ModelSerializer):
-    user = UserReadSerializerPublic(read_only=True)
+    user = UserPublicInfoSerializer(read_only=True)
 
     class Meta:
         model = Question

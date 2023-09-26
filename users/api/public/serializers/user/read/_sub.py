@@ -13,3 +13,13 @@ class _ProfileSerializer(serializers.ModelSerializer):
             'social_id',
             'birth_date',
         ]
+
+
+class _ProfilePublicInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = [
+            'first_name',
+            'last_name',
+            'avatar',
+        ]

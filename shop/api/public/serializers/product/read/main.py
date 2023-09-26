@@ -8,6 +8,7 @@ from ._sub import (
     _VariantSerializer,
     _AttributeValueSerializer,
     _ImageSerializer,
+    _QuestionSerializer,
 )
 
 
@@ -46,6 +47,7 @@ class ProductDetailSerializerPublic(serializers.ModelSerializer):
     attribute_values = _AttributeValueSerializer(read_only=True, many=True)
     variants = _VariantSerializer(read_only=True, many=True)
     images = serializers.SerializerMethodField(method_name='get_images')
+    questions = _QuestionSerializer(read_only=True, many=True)
 
     class Meta:
         model = Product
@@ -60,6 +62,7 @@ class ProductDetailSerializerPublic(serializers.ModelSerializer):
             'attribute_values',
             'variants',
             'images',
+            'questions',
         ]
 
     @extend_schema_field(_ImageSerializer)

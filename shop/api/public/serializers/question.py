@@ -10,8 +10,18 @@ __all__ = [
 
 class QuestionWriteSerializerPublic(serializers.ModelSerializer):
     class Meta:
-        model = Comment
+        model = Question
         fields = [
             'product',
-            'text',
+            'question',
+            'is_private',
         ]
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        q = Question.objects.create(
+            user=request.user,
+            product=validated_data['product'],
+            question=validated_data['question']
+        )
+        return q

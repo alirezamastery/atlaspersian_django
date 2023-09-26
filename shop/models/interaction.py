@@ -13,7 +13,7 @@ class Comment(models.Model):
     text = models.TextField()
     accepted = models.BooleanField(default=False)
 
-    create_at = models.DateTimeField(auto_now_add=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
 
 
@@ -23,6 +23,7 @@ class Question(models.Model):
     question = models.TextField()
     answer = models.TextField(default='', blank=True)
     accepted = models.BooleanField(default=False)
+    is_private = models.BooleanField(default=False)
 
-    create_at = models.DateTimeField(auto_now_add=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)

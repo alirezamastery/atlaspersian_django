@@ -70,11 +70,19 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
             .select_related('product')
             .order_by('id')
         )
+        prefetch_questions = Prefetch(
+            'questions',
+            Question.objects
+            .select_related('user__profile')
+            .filter(is_private=False, accepted=True)
+            .order_by('-created_at')
+        )
         return (Product.objects
                 .select_related('brand')
                 .select_related('category__selector_type')
                 .prefetch_related(prefetch_variants_detail)
                 .prefetch_related(prefetch_attrs)
+                .prefetch_related(prefetch_questions)
                 .filter(is_active=True)
                 .order_by('-created_at'))
 
@@ -101,7 +109,6 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
                      .aggregate(max=Max('price_max'))['max'] or 0)
 
         category_id = request.query_params.get('cat_id', '')
-        print(f'{category_id = }')
         if category_id and category_id.isnumeric():
             try:
                 category = Category.objects.get(id=category_id)
