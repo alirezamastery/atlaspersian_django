@@ -49,4 +49,10 @@ class VariantCreateSerializer(serializers.ModelSerializer):
 class VariantUpdateSerializerAdmin(serializers.ModelSerializer):
     class Meta:
         model = Variant
-        fields = ['is_active', 'price', 'inventory', 'max_in_order']
+        fields = [
+            'is_active',
+            'price',
+            'inventory',
+            'max_in_order',
+            'discount'
+        ]

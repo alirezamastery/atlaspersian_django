@@ -1,4 +1,4 @@
-from django.db.models import Prefetch
+from django.db.models import Prefetch, F
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
@@ -37,13 +37,13 @@ class ProductViewSetAdmin(ModelViewSet):
             'attribute_values',
             queryset=ProductAttributeValue.objects.select_related('attribute__unit')
         )
-        return Product.objects \
-            .select_related('brand') \
-            .select_related('category') \
-            .prefetch_related('variants__selector_value__type') \
-            .prefetch_related(prefetch_attrs) \
-            .all() \
-            .order_by('-id')
+        return (Product.objects
+                .select_related('brand')
+                .select_related('category')
+                .prefetch_related('variants__selector_value__type')
+                .prefetch_related(prefetch_attrs)
+                .all()
+                .order_by('-id'))
 
     @action(detail=False, methods=['POST'], url_path='add-variants')
     def add_variants(self, request, *args, **kwargs):

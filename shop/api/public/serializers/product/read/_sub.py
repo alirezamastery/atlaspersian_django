@@ -3,6 +3,7 @@ from rest_framework.serializers import ModelSerializer
 
 from shop.models import *
 from shop.api.public.serializers import UserPublicInfoSerializer
+from shop.utils import get_variant_final_price
 
 
 class _BrandSerializer(ModelSerializer):
@@ -90,6 +91,8 @@ class _VariantSerializer(ModelSerializer):
     selector_value = _SelectorValueSerializer(read_only=True)
     product = _Product(read_only=True)
 
+    price_display = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Variant
         fields = [
@@ -97,10 +100,24 @@ class _VariantSerializer(ModelSerializer):
             'product',
             'selector_value',
             'price',
+            'price_display',
             'inventory',
             'max_in_order',
             'discount',
         ]
+
+    def to_representation(self, instance):
+        res = super().to_representation(instance)
+
+        res['price_display'] = res['price'] // 10
+
+        res['final_price'] = get_variant_final_price(instance)
+        res['final_price_display'] = res['final_price'] // 10
+
+        res['discount_value'] = res['price'] - res['final_price']
+        res['discount_value_display'] = res['discount_value'] // 10
+
+        return res
 
 
 class _CategorySerializer(ModelSerializer):

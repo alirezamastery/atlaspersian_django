@@ -6,10 +6,10 @@ from shop.models import *
 from shop.api.admin.serializers import *
 
 
-class QuestionsViewSet(mixins.RetrieveModelMixin,
-                       mixins.ListModelMixin,
-                       mixins.UpdateModelMixin,
-                       GenericViewSet):
+class QuestionViewSet(mixins.RetrieveModelMixin,
+                      mixins.ListModelMixin,
+                      mixins.UpdateModelMixin,
+                      GenericViewSet):
     queryset = (Question.objects
                 .select_related('user__profile')
                 .select_related('product')

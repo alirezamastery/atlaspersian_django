@@ -20,5 +20,7 @@ router.register('selector-types', VariantSelectorTypeViewSetAdmin, basename='sel
 router.register('variants', VariantViewSetAdmin, basename='variants')
 router.register('images', ImageViewSetAdmin, basename='images')
 router.register('orders', OrderViewSetAdmin, basename='orders')
+router.register('questions', QuestionViewSet, basename='questions')
+# router.register('comments', CommentiewSet, basename='comments')
 
 urlpatterns += router.urls

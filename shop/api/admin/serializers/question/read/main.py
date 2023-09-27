@@ -17,11 +17,13 @@ class QuestionReadSerializerAdmin(serializers.ModelSerializer):
     class Meta:
         model = Question
         fields = [
+            'id',
             'user',
             'product',
             'question',
             'answer',
             'accepted',
-            'create_at',
+            'is_private',
+            'created_at',
             'updated_at',
         ]

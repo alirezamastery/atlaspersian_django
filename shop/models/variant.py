@@ -22,9 +22,9 @@ class Variant(models.Model):
     )
 
     is_active = models.BooleanField(default=True)
-    price = models.PositiveBigIntegerField()
     inventory = models.PositiveIntegerField()
     max_in_order = models.PositiveIntegerField()
+    price = models.PositiveBigIntegerField()
     discount = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(99)])
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
