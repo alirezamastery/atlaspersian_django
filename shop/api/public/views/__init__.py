@@ -5,3 +5,4 @@ from .order import *
 from .payment import *
 from .shipping import *
 from .question import *
+from .cart import *

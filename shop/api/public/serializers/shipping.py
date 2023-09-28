@@ -17,4 +17,5 @@ class ShippingMethodReadSerializerPublic(serializers.ModelSerializer):
             'title',
             'description',
             'is_active',
+            'cost',
         ]

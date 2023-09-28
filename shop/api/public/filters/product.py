@@ -25,7 +25,11 @@ class CustomOrderingFilter(OrderingFilter):
         elif val == '-p':
             return qs.order_by('-price_min')
         elif val == 'l':
-            return qs.order_by('-created_at')
+            return qs.order_by('-score')
+        elif val == 'd':
+            return qs.order_by('-max_discount')
+        elif val == 's':
+            return qs.order_by('-sale_sum')
 
         return qs
 
@@ -39,7 +43,8 @@ class ProductFilterPublic(filters.FilterSet):
     is_av = filters.BooleanFilter(method='is_available')
     cat_id = filters.NumberFilter(field_name='category_id')
 
-    o = CustomOrderingFilter(fields=['n', 'p', '-p', 'l', 'd'])  # map: newest price -price liked discount
+    # map: newest price -price liked discount sale_count
+    o = CustomOrderingFilter(fields=['n', 'p', '-p', 'l', 'd', 's'])
 
     class Meta:
         model = Product
@@ -62,4 +67,3 @@ class ProductFilterPublic(filters.FilterSet):
         if value > -1:
             return qs.filter(price_min__lte=value)
         return qs
-

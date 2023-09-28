@@ -3,7 +3,7 @@ from rest_framework.serializers import ModelSerializer
 
 from shop.models import *
 from shop.api.public.serializers import UserPublicInfoSerializer
-from shop.utils import get_variant_final_price
+from shop.utils import *
 
 
 class _BrandSerializer(ModelSerializer):
@@ -81,9 +81,11 @@ class _Product(ModelSerializer):
     class Meta:
         model = Product
         fields = [
+            'id',
             'title',
             'description',
             'thumbnail',
+            'slug',
         ]
 
 
@@ -113,6 +115,12 @@ class _VariantSerializer(ModelSerializer):
 
         res['final_price'] = get_variant_final_price(instance)
         res['final_price_display'] = res['final_price'] // 10
+
+        res['tax'] = get_variant_tax(instance)
+        res['tax_display'] = res['tax'] // 10
+
+        res['taxed_price'] = res['tax'] + res['final_price']
+        res['taxed_price_display'] = res['taxed_price'] // 10
 
         res['discount_value'] = res['price'] - res['final_price']
         res['discount_value_display'] = res['discount_value'] // 10

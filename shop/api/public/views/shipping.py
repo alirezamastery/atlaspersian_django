@@ -11,7 +11,7 @@ __all__ = [
 
 
 class ShippingMethodViewSetPublic(ReadOnlyModelViewSet):
-    queryset = PaymentMethod.objects.all().order_by('id')
+    queryset = ShippingMethod.objects.all().order_by('id')
     serializer_class = ShippingMethodReadSerializerPublic
     permission_classes = [IsAuthenticated]
     pagination_class = None

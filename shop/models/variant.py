@@ -27,6 +27,8 @@ class Variant(models.Model):
     price = models.PositiveBigIntegerField()
     discount = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(99)])
 
+    sale_count = models.PositiveIntegerField(default=0)
+
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 

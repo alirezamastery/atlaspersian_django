@@ -9,6 +9,7 @@ app_name = 'shop_api_public'
 router = DefaultRouter()
 
 urlpatterns = [
+    path('checkout-opts/', CartCheckoutOptionsView.as_view(), name='cart-checkout-opts')
 ]
 
 router.register('categories', CategoryViewSetPublic, basename='categories')

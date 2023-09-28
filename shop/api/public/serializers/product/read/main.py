@@ -22,7 +22,9 @@ class ProductListSerializerPublic(serializers.ModelSerializer):
     brand = _BrandSerializer(read_only=True)
     category = _CategorySerializer(read_only=True)
     variants = _VariantSerializer(read_only=True, many=True)
+
     price_min = serializers.IntegerField()
+    max_discount = serializers.IntegerField()
 
     class Meta:
         model = Product
@@ -38,7 +40,15 @@ class ProductListSerializerPublic(serializers.ModelSerializer):
             'variants',
             'price_min',
             'score',
+            'max_discount',
         ]
+
+    def to_representation(self, instance):
+        res = super().to_representation(instance)
+
+        res['price_min_display'] = res['price_min'] // 10
+
+        return res
 
 
 class ProductDetailSerializerPublic(serializers.ModelSerializer):

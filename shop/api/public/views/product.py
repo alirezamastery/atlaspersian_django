@@ -54,6 +54,8 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
                     .select_related('category')
                     .prefetch_related(prefetch_variants)
                     .filter(is_active=True, **filters)
+                    .annotate(sale_sum=Sum('variants__sale_count'))
+                    .annotate(max_discount=Max('variants__discount'))
                     .annotate(total_inventory=Coalesce(Subquery(total_inv_subq), Value(0)))
                     .annotate(price_min=Coalesce(Subquery(price_min_subq), Value(0)))
                     .order_by('-created_at'))

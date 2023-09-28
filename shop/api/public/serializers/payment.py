@@ -17,4 +17,5 @@ class PaymentMethodReadSerializerPublic(serializers.ModelSerializer):
             'title',
             'description',
             'is_active',
+            'is_taxable',
         ]
