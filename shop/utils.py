@@ -6,6 +6,7 @@ __all__ = [
     'get_variant_tax',
 ]
 
+
 def get_variant_final_price(variant: Variant) -> int:
     if variant.discount > 0:
         final_price = (variant.price * (100 - variant.discount)) // 100

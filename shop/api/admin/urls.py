@@ -21,6 +21,7 @@ router.register('variants', VariantViewSetAdmin, basename='variants')
 router.register('images', ImageViewSetAdmin, basename='images')
 router.register('orders', OrderViewSetAdmin, basename='orders')
 router.register('questions', QuestionViewSet, basename='questions')
+router.register('home-slides', HomeSlideViewSetAdmin, basename='home-slides')
 # router.register('comments', CommentiewSet, basename='comments')
 
 urlpatterns += router.urls

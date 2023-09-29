@@ -10,3 +10,5 @@ from .order.write.main import *
 
 from .payment import *
 from .shipping import *
+
+from .home_slide import *

@@ -3,6 +3,7 @@ from django.db import models
 
 __all__ = [
     'ProductImage',
+    'HomeSlide',
 ]
 
 
@@ -23,3 +24,13 @@ class ProductImage(models.Model):
             for img in other_images:
                 img.is_main = False
             ProductImage.objects.bulk_update(other_images, ['is_main'])
+
+
+class HomeSlide(models.Model):
+    image = models.ImageField(upload_to='home/slide')
+    link = models.CharField(max_length=255)
+    alt = models.CharField(max_length=255)
+    description = models.TextField(default='', blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    updated_at = models.DateTimeField(auto_now=True)

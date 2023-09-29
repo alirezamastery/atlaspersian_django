@@ -60,9 +60,7 @@ class OtpVerifySerializer(serializers.Serializer):
                 'code':    APIErrorCodes.INVALID_OTP.value,
                 'message': 'invalid otp'
             })
-        print(otp.created_at)
-        print(dt.datetime.now())
-        print(dt.datetime.now(dt.timezone.utc) - otp.created_at)
+
         if dt.datetime.now(dt.timezone.utc) - otp.created_at > dt.timedelta(minutes=15):
             raise serializers.ValidationError({
                 'code':    APIErrorCodes.OTP_EXPIRED.value,

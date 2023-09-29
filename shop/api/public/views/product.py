@@ -8,6 +8,7 @@ from shop.models import *
 from shop.api.public.serializers import *
 from shop.api.public.filters import *
 from utils.drf.permissions import ReadOnly
+from shop.api.public.queries import *
 
 
 __all__ = [
@@ -32,23 +33,10 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
             if brand_ids:
                 filters['brand__id__in'] = brand_ids
 
-            prefetch_variants = Prefetch(
-                'variants',
-                queryset=Variant.objects
-                .filter(is_active=True)
-                .select_related('selector_value__type')
-                .order_by('id')
-            )
-            total_inv_subq = (Variant.objects
-                              .values('product_id')
-                              .filter(product=OuterRef('id'), is_active=True)
-                              .annotate(sum=Sum('inventory'))
-                              .values('sum'))
-            price_min_subq = (Variant.objects
-                              .values('product_id')
-                              .filter(product=OuterRef('id'), is_active=True)
-                              .annotate(min=Min('price'))
-                              .values('min'))
+            prefetch_variants = get_prefetch_variants()
+            total_inv_subq = get_total_inventory_subq()
+            price_min_subq = get_price_min_subq()
+
             return (Product.objects
                     .select_related('brand')
                     .select_related('category')
@@ -79,12 +67,20 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
             .filter(is_private=False, accepted=True)
             .order_by('-created_at')
         )
+        prefetch_comments = Prefetch(
+            'comments',
+            Comment.objects
+            .select_related('user__profile')
+            .filter(accepted=True)
+            .order_by('-created_at')
+        )
         return (Product.objects
                 .select_related('brand')
                 .select_related('category__selector_type')
                 .prefetch_related(prefetch_variants_detail)
                 .prefetch_related(prefetch_attrs)
                 .prefetch_related(prefetch_questions)
+                .prefetch_related(prefetch_comments)
                 .filter(is_active=True)
                 .order_by('-created_at'))
 

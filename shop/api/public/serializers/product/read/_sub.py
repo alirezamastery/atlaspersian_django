@@ -144,6 +144,8 @@ class _CommentSerializer(ModelSerializer):
         fields = [
             'user',
             'text',
+            'quality_score',
+            'worth_buy_score',
             'created_at',
         ]
 

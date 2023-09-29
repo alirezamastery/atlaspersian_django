@@ -3,7 +3,7 @@ from .category import *
 from .attribute import *
 from .product import *
 from .selector import *
-from .image import *
+from .media import *
 from .variant import *
 from .order import *
 from .question import *

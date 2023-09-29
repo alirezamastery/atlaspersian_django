@@ -6,3 +6,6 @@ from .payment import *
 from .shipping import *
 from .question import *
 from .cart import *
+from .media import *
+from .home import *
+from .comment import *

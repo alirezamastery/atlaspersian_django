@@ -8,6 +8,7 @@ from ._sub import (
     _VariantSerializer,
     _AttributeValueSerializer,
     _ImageSerializer,
+    _CommentSerializer,
     _QuestionSerializer,
 )
 
@@ -54,9 +55,11 @@ class ProductListSerializerPublic(serializers.ModelSerializer):
 class ProductDetailSerializerPublic(serializers.ModelSerializer):
     brand = _BrandSerializer(read_only=True)
     category = _CategorySerializer(read_only=True)
+
     attribute_values = _AttributeValueSerializer(read_only=True, many=True)
     variants = _VariantSerializer(read_only=True, many=True)
     images = serializers.SerializerMethodField(method_name='get_images')
+    comments = _CommentSerializer(read_only=True, many=True)
     questions = _QuestionSerializer(read_only=True, many=True)
 
     class Meta:
@@ -72,6 +75,7 @@ class ProductDetailSerializerPublic(serializers.ModelSerializer):
             'attribute_values',
             'variants',
             'images',
+            'comments',
             'questions',
         ]
 

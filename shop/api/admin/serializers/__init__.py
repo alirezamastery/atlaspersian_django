@@ -22,3 +22,5 @@ from .attr_unit import *
 
 from .question.read.main import *
 from .question.write import *
+
+from .home_slide import *

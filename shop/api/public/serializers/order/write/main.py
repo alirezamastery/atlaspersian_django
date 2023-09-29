@@ -4,6 +4,7 @@ from rest_framework import serializers
 from shop.models import *
 from ..read.main import OrderDetailSerializerPublic
 from ._sub import _OrderItemWriteSerializer
+from utils.drf.error_codes import *
 
 
 __all__ = [
@@ -22,6 +23,20 @@ class OrderWriteSerializerPublic(serializers.ModelSerializer):
             'user_note',
             'items',
         ]
+
+    def validate(self, attrs):
+        items = attrs['items']
+        for item in items:
+            variant = item['variant']
+            quantity = item['quantity']
+            if quantity > variant.inventory:
+                raise serializers.ValidationError({
+                    'code':       APIErrorCodes.INVALID_VARIANT_QUANTITY.value,
+                    'variant_id': variant.id,
+                    'inventory':  variant.inventory,
+                })
+
+        return attrs
 
     def create(self, validated_data):
         request = self.context.get('request')
