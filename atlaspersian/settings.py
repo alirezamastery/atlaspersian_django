@@ -164,6 +164,8 @@ CSRF_TRUSTED_ORIGINS = [
     'https://atlaspersian.com',
 ]
 
+CUSTOM_LOGGING = config('CUSTOM_LOGGING')
+
 # ******************* settings for DRF *******************
 DEFAULT_RENDERER_CLASSES = [
     'rest_framework.renderers.JSONRenderer',

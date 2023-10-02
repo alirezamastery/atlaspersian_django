@@ -23,4 +23,7 @@ from .attr_unit import *
 from .question.read.main import *
 from .question.write import *
 
+from .comment.read.main import *
+from .comment.write import *
+
 from .home_slide import *
