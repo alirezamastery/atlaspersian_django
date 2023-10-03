@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.core.validators import MaxValueValidator
 
 
 __all__ = [
@@ -50,8 +51,10 @@ class OrderItem(models.Model):
     order = models.ForeignKey('shop.Order', on_delete=models.PROTECT, related_name='items')
     item = models.ForeignKey('shop.Variant', on_delete=models.PROTECT, related_name='order_items')
 
-    price = models.PositiveBigIntegerField()
+    raw_price = models.PositiveBigIntegerField()
+    pay_price = models.PositiveBigIntegerField()
     quantity = models.PositiveIntegerField()
+    discount = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(99)])
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)

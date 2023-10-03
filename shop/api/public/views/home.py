@@ -49,9 +49,9 @@ class HomePageDataView(APIView):
 
         serializer_context = {'request': request}
         response = {
-            'discounted':   ProductListSerializerPublic(discounted, many=True, context=serializer_context).data,
-            'highest_sale': ProductListSerializerPublic(highest_sale, many=True, context=serializer_context).data,
-            'home_slides':  HomeSlideReadSerializerPublic(home_slides, many=True, context=serializer_context).data,
+            'discounted':    ProductListSerializerPublic(discounted, many=True, context=serializer_context).data,
+            'highest_sale':  ProductListSerializerPublic(highest_sale, many=True, context=serializer_context).data,
+            'home_slides':   HomeSlideReadSerializerPublic(home_slides, many=True, context=serializer_context).data,
         }
 
         return Response(response)

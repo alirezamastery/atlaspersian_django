@@ -27,3 +27,4 @@ from .comment.read.main import *
 from .comment.write import *
 
 from .home_slide import *
+from .card import *

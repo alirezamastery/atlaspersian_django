@@ -6,6 +6,7 @@ from users.api.public.serializers import AddressReadSerializerPublic
 from shop.models import *
 from shop.api.public.serializers import *
 from utils.drf.permissions import IsAuthenticated
+from utils.json_db import jdb
 
 
 __all__ = [
@@ -24,7 +25,11 @@ class CartCheckoutOptionsView(APIView):
         response = {
             'addresses':    AddressReadSerializerPublic(addresses, many=True).data,
             'ship_methods': ShippingMethodReadSerializerPublic(ship_methods, many=True).data,
-            'pay_methods':  PaymentMethodReadSerializerPublic(pay_methods, many=True).data
+            'pay_methods':  PaymentMethodReadSerializerPublic(pay_methods, many=True).data,
+            'card_info':         {
+                'number': jdb.get(jdb.keys.CARD_NUMBER.value),
+                'owner':  jdb.get(jdb.keys.CARD_OWNER.value),
+            }
         }
 
         return Response(response)

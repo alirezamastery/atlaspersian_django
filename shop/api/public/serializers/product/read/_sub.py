@@ -119,7 +119,7 @@ class _VariantSerializer(ModelSerializer):
         res['tax'] = get_variant_tax(instance)
         res['tax_display'] = res['tax'] // 10
 
-        res['taxed_price'] = res['tax'] + res['final_price']
+        res['taxed_price'] = get_variant_taxed_price(instance)
         res['taxed_price_display'] = res['taxed_price'] // 10
 
         res['discount_value'] = res['price'] - res['final_price']

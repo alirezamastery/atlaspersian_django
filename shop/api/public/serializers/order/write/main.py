@@ -5,6 +5,7 @@ from shop.models import *
 from ..read.main import OrderDetailSerializerPublic
 from ._sub import _OrderItemWriteSerializer
 from utils.drf.error_codes import *
+from shop.utils import *
 
 
 __all__ = [
@@ -45,7 +46,7 @@ class OrderWriteSerializerPublic(serializers.ModelSerializer):
         pay_method = validated_data['pay_method']
         address = validated_data['pay_method']
 
-        pay_amount = sum(item['quantity'] * item['variant'].price for item in items)
+        pay_amount = 0
         order = Order.objects.create(
             user=request.user,
             pay_amount=pay_amount,
@@ -56,14 +57,27 @@ class OrderWriteSerializerPublic(serializers.ModelSerializer):
         for item in items:
             variant = item['variant']
             quantity = item['quantity']
+
+            if pay_method.is_taxable:
+                pay_price = get_variant_taxed_price(variant)
+            else:
+                pay_price = get_variant_final_price(variant)
+
             OrderItem.objects.create(
                 order=order,
                 item=variant,
-                price=variant.price,
-                quantity=quantity
+                raw_price=variant.price,
+                pay_price=pay_price,
+                quantity=quantity,
+                discount=variant.discount,
             )
             variant.inventory = variant.inventory - quantity
             variant.save()
+
+            pay_amount += pay_price * quantity
+
+        order.pay_amount = pay_amount
+        order.save()
 
         prefetch_items = Prefetch(
             'items',

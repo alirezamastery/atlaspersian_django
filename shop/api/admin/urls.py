@@ -9,6 +9,7 @@ app_name = 'shop_api_admin'
 router = DefaultRouter()
 
 urlpatterns = [
+    path('card-info/', CardInfoView.as_view(), name='card-info'),
 ]
 
 router.register('categories', CategoryViewSetAdmin, basename='categories')

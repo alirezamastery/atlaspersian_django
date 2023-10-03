@@ -1,4 +1,4 @@
-from django.db.models import Sum, OuterRef, Subquery, Value, Prefetch, Min, Max
+from django.db.models import Sum, Subquery, Value, Prefetch, Min, Max
 from django.db.models.functions import Coalesce
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
@@ -86,33 +86,25 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
 
     @action(detail=False, methods=['GET'], url_path='filter-config')
     def get_filter_config(self, request):
-        min_price_subq = (Variant.objects
-                          .values('product_id')
-                          .filter(product=OuterRef('id'))
-                          .annotate(min=Min('price'))
-                          .values('min'))
-        max_price_subq = (Variant.objects
-                          .values('product_id')
-                          .filter(product=OuterRef('id'))
-                          .annotate(max=Max('price'))
-                          .values('max'))
+        category_id = request.query_params.get('cat_id')
+        try:
+            category = Category.objects.get(id=category_id)
+        except Category.DoesNotExist:
+            category = None
 
-        price_min = (Product.objects
-                     .filter(is_active=True)
-                     .annotate(price_min=Subquery(min_price_subq))
-                     .aggregate(min=Min('price_min'))['min'] or 0)
-        price_max = (Product.objects
-                     .filter(is_active=True)
-                     .annotate(price_max=Subquery(max_price_subq))
-                     .aggregate(max=Max('price_max'))['max'] or 0)
+        filters = {}
+        if category:
+            filters['product__category_id'] = category.id
 
-        category_id = request.query_params.get('cat_id', '')
-        if category_id and category_id.isnumeric():
-            try:
-                category = Category.objects.get(id=category_id)
-                brands = category.brands.all()
-            except Category.DoesNotExist:
-                brands = Brand.objects.all()
+        price_min = (Variant.objects
+                     .filter(**filters)
+                     .aggregate(min=Min('price'))['min'] or 0)
+        price_max = (Variant.objects
+                     .filter(**filters)
+                     .aggregate(max=Max('price'))['max'] or 0)
+
+        if category:
+            brands = category.brands.all()
         else:
             brands = Brand.objects.all()
 
