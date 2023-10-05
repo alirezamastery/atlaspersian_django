@@ -34,5 +34,5 @@ def get_price_min_subq(*, filters: dict | None = None):
     return (Variant.objects
             .values('product_id')
             .filter(product=OuterRef('id'), is_active=True, **filters)
-            .annotate(min=Min('price'))
+            .annotate(min=Min('selling_price'))
             .values('min'))

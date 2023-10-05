@@ -8,15 +8,25 @@ __all__ = [
 ]
 
 
-class _OrderItemVariantSerializer(serializers.ModelSerializer):
+class _Variant(serializers.ModelSerializer):
     class Meta:
         model = Variant
-        fields = ['id', 'product_id', 'selector_value_id', 'is_active']
+        fields = [
+            'id',
+            'product_id',
+            'selector_value_id',
+            'is_active'
+        ]
 
 
 class _OrderItemReadSerializer(serializers.ModelSerializer):
-    item = _OrderItemVariantSerializer(read_only=True)
+    variant = _Variant(read_only=True)
 
     class Meta:
         model = OrderItem
-        fields = ['id', 'item', 'price', 'quantity']
+        fields = [
+            'id',
+            'variant',
+            'selling_price',
+            'quantity'
+        ]

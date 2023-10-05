@@ -16,29 +16,15 @@ class OrderWriteSerializerAdmin(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['user', 'items']
-
-    def create(self, validated_data):
-        user = validated_data['user']
-        items = validated_data['items']
-
-        price_sum = sum(item['quantity'] * item['variant'].price for item in items)
-        order = Order.objects.create(user=user, price_sum=price_sum)
-
-        for item in items:
-            OrderItem.objects.create(
-                order=order,
-                item=item['variant'],
-                price=item['variant'].price,
-                quantity=item['quantity']
-            )
-
-        order = Order.objects \
-            .select_related('user') \
-            .prefetch_related(Prefetch('items', queryset=OrderItem.objects.all())) \
-            .get(id=order.id)
-
-        return order
+        fields = [
+            'user',
+            'items',
+            'status',
+            'pay_method',
+            'address',
+            'ship_method',
+            'is_verified',
+        ]
 
     def to_representation(self, instance: Order) -> dict:
         return OrderReadSerializerAdmin(instance).data

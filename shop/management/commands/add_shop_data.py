@@ -142,7 +142,7 @@ class Command(BaseCommand):
             variant = Variant.objects.create(
                 product_id=v['product']['id'],
                 selector_value_id=v['selector']['id'],
-                price=random.randrange(1000, 100_000) * 1000,
+                raw_price=random.randrange(1000, 100_000) * 1000,
                 inventory=random.randrange(0, 5),
                 max_in_order=5
             )

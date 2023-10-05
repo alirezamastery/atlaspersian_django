@@ -8,3 +8,4 @@ from .order import *
 from .payment import *
 from .shipping import *
 from .interaction import *
+from .price import *

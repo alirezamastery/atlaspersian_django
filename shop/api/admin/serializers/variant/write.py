@@ -20,10 +20,10 @@ class VariantCreateSerializer(serializers.ModelSerializer):
             'product',
             'selector_value',
             'is_active',
-            'price',
             'inventory',
             'max_in_order',
-            'discount',
+            'discount_percent',
+            'raw_price',
         ]
         validators = [
             UniqueTogetherValidator(
@@ -51,8 +51,11 @@ class VariantUpdateSerializerAdmin(serializers.ModelSerializer):
         model = Variant
         fields = [
             'is_active',
-            'price',
             'inventory',
             'max_in_order',
-            'discount'
+            'discount_percent',
+            'raw_price',
         ]
+
+    def to_representation(self, instance):
+        return VariantReadSerializerAdmin(instance).data

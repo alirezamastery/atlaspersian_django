@@ -14,7 +14,7 @@ class VariantFilterAdmin(filters.FilterSet):
     q = filters.CharFilter(method='search_in_fields')
     is_active = filters.BooleanFilter(field_name='is_active')
 
-    o = OrderingFilter(fields=['price', 'is_active'])
+    o = OrderingFilter(fields=['raw_price', 'is_active'])
 
     class Meta:
         model = Variant

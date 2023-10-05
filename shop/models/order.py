@@ -1,7 +1,9 @@
 import uuid
 
 from django.db import models
-from django.core.validators import MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
+
+# from shop.models import PriceModel
 
 
 __all__ = [
@@ -24,11 +26,11 @@ class Order(models.Model):
     user = models.ForeignKey('users.User', on_delete=models.PROTECT, related_name='shop_orders')
     status = models.CharField(max_length=255, choices=Status.choices, default=Status.PENDING_PAYMENT)
     pay_method = models.ForeignKey('shop.PaymentMethod', on_delete=models.PROTECT, related_name='orders')
-    pay_amount = models.PositiveBigIntegerField()
-    address = models.ForeignKey('users.Address', on_delete=models.PROTECT, related_name='orders')
     ship_method = models.ForeignKey('shop.ShippingMethod', on_delete=models.PROTECT, related_name='orders')
+    address = models.ForeignKey('users.Address', on_delete=models.PROTECT, related_name='orders')
     user_note = models.TextField(default='', blank=True)
 
+    pay_amount = models.PositiveBigIntegerField()
     is_verified = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
@@ -49,12 +51,12 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey('shop.Order', on_delete=models.PROTECT, related_name='items')
-    item = models.ForeignKey('shop.Variant', on_delete=models.PROTECT, related_name='order_items')
+    variant = models.ForeignKey('shop.Variant', on_delete=models.PROTECT, related_name='order_items')
 
-    raw_price = models.PositiveBigIntegerField()
-    pay_price = models.PositiveBigIntegerField()
-    quantity = models.PositiveIntegerField()
-    discount = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(99)])
+    discount_percent = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(99)])
+
+    raw_price = models.PositiveBigIntegerField(validators=[MinValueValidator(10000)])
+    selling_price = models.PositiveBigIntegerField(validators=[MinValueValidator(10000)])
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
@@ -62,7 +64,7 @@ class OrderItem(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['order', 'item'],
-                name='unique_order_item'
+                fields=['order', 'variant'],
+                name='unique_order_variant'
             )
         ]

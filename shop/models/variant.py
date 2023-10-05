@@ -1,5 +1,6 @@
 from django.db import models
-from django.core.validators import MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.conf import settings
 
 
 __all__ = [
@@ -23,9 +24,13 @@ class Variant(models.Model):
 
     is_active = models.BooleanField(default=True)
     inventory = models.PositiveIntegerField()
-    max_in_order = models.PositiveIntegerField()
-    price = models.PositiveBigIntegerField()
-    discount = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(99)])
+    max_in_order = models.PositiveIntegerField(default=5)
+
+    discount_percent = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(99)])
+    discount_value = models.PositiveBigIntegerField(default=0)
+
+    raw_price = models.PositiveBigIntegerField(validators=[MinValueValidator(10000)])
+    selling_price = models.PositiveBigIntegerField(validators=[MinValueValidator(10000)])
 
     sale_count = models.PositiveIntegerField(default=0)
 
@@ -42,6 +47,19 @@ class Variant(models.Model):
 
     def __str__(self):
         return f'{self.product} - {self.selector_value.value}'
+
+    def save(self, **kwargs):
+        decimal = settings.PRICE_DECIMAL
+
+        self.raw_price = round(self.raw_price, decimal)
+        self.discount_value = round(self.raw_price * self.discount_percent / 100, decimal)
+        selling_price = self.raw_price * (100 - self.discount_percent) / 100
+        self.selling_price = round(selling_price, decimal)
+
+        super().save(**kwargs)
+
+    def delete(self, using=None, keep_parents=False):
+        pass
 
 
 class SelectorType(models.Model):

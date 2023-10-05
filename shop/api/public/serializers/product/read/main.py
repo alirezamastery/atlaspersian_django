@@ -46,9 +46,7 @@ class ProductListSerializerPublic(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         res = super().to_representation(instance)
-
         res['price_min_display'] = res['price_min'] // 10
-
         return res
 
 
@@ -66,12 +64,14 @@ class ProductDetailSerializerPublic(serializers.ModelSerializer):
         model = Product
         fields = [
             'id',
-            'brand',
             'title',
-            'description',
             'slug',
             'thumbnail',
+            'score',
+            'brand',
             'category',
+            'description',
+            'introduction',
             'attribute_values',
             'variants',
             'images',

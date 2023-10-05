@@ -1,11 +1,10 @@
-from django.db.models import Prefetch
+from django.db.models import Prefetch, F
 from rest_framework import serializers
 
 from shop.models import *
 from ..read.main import OrderDetailSerializerPublic
 from ._sub import _OrderItemWriteSerializer
 from utils.drf.error_codes import *
-from shop.utils import *
 
 
 __all__ = [
@@ -19,10 +18,11 @@ class OrderWriteSerializerPublic(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = [
+            'items',
             'pay_method'
+            'ship_method'
             'address',
             'user_note',
-            'items',
         ]
 
     def validate(self, attrs):
@@ -44,9 +44,10 @@ class OrderWriteSerializerPublic(serializers.ModelSerializer):
 
         items = validated_data['items']
         pay_method = validated_data['pay_method']
+        ship_method = validated_data['ship_method']
         address = validated_data['pay_method']
 
-        pay_amount = 0
+        pay_amount = ship_method.cost
         order = Order.objects.create(
             user=request.user,
             pay_amount=pay_amount,
@@ -58,23 +59,19 @@ class OrderWriteSerializerPublic(serializers.ModelSerializer):
             variant = item['variant']
             quantity = item['quantity']
 
-            if pay_method.is_taxable:
-                pay_price = get_variant_taxed_price(variant)
-            else:
-                pay_price = get_variant_final_price(variant)
-
             OrderItem.objects.create(
                 order=order,
-                item=variant,
-                raw_price=variant.price,
-                pay_price=pay_price,
+                variant=variant,
                 quantity=quantity,
-                discount=variant.discount,
+                discount_percent=variant.discount_percent,
+                raw_price=variant.raw_price,
+                selling_price=variant.selling_price,
             )
-            variant.inventory = variant.inventory - quantity
+            variant.inventory = F('inventory') - quantity
+            variant.sale_count = F('sale_count') + quantity
             variant.save()
 
-            pay_amount += pay_price * quantity
+            pay_amount += variant.selling_price * quantity
 
         order.pay_amount = pay_amount
         order.save()

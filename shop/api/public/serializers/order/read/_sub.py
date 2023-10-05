@@ -93,4 +93,4 @@ class _OrderItemSerializer(ModelSerializer):
 
     class Meta:
         model = OrderItem
-        fields = ['item', 'price', 'quantity']
+        fields = ['item', 'selling_price', 'quantity']

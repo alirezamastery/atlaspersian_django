@@ -98,10 +98,10 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
 
         price_min = (Variant.objects
                      .filter(**filters)
-                     .aggregate(min=Min('price'))['min'] or 0)
+                     .aggregate(min=Min('selling_price'))['min'] or 0)
         price_max = (Variant.objects
                      .filter(**filters)
-                     .aggregate(max=Max('price'))['max'] or 0)
+                     .aggregate(max=Max('selling_price'))['max'] or 0)
 
         if category:
             brands = category.brands.all()

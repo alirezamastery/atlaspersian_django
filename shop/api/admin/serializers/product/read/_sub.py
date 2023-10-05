@@ -96,10 +96,12 @@ class _VariantSerializer(serializers.ModelSerializer):
             'product',
             'selector_value',
             'is_active',
-            'price',
             'inventory',
             'max_in_order',
-            'discount',
+            'discount_percent',
+            'raw_price',
+            'selling_price',
+            'sale_count',
         ]
 
 

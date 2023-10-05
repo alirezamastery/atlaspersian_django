@@ -10,13 +10,7 @@ __all__ = [
 
 
 class Product(models.Model):
-    brand = models.ForeignKey(
-        'shop.Brand',
-        on_delete=models.PROTECT,
-        related_name='products'
-    )
     title = models.CharField(max_length=255, unique=True)
-    description = models.TextField(default='')
     is_active = models.BooleanField(default=True, blank=True)
     slug = models.SlugField(unique=True, editable=False, blank=True)
     thumbnail = models.ImageField(upload_to='product/thumbnail')
@@ -27,6 +21,14 @@ class Product(models.Model):
         on_delete=models.PROTECT,
         related_name='products'
     )
+    brand = models.ForeignKey(
+        'shop.Brand',
+        on_delete=models.PROTECT,
+        related_name='products'
+    )
+
+    introduction = models.TextField(default='')
+    description = models.TextField(default='')
 
     attribute_values = models.ManyToManyField(
         'shop.Attribute',
