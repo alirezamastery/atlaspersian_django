@@ -19,8 +19,8 @@ class OrderWriteSerializerPublic(serializers.ModelSerializer):
         model = Order
         fields = [
             'items',
-            'pay_method'
-            'ship_method'
+            'pay_method',
+            'ship_method',
             'address',
             'user_note',
         ]
@@ -45,14 +45,16 @@ class OrderWriteSerializerPublic(serializers.ModelSerializer):
         items = validated_data['items']
         pay_method = validated_data['pay_method']
         ship_method = validated_data['ship_method']
-        address = validated_data['pay_method']
+        address = validated_data['address']
 
         pay_amount = ship_method.cost
         order = Order.objects.create(
             user=request.user,
             pay_amount=pay_amount,
             pay_method=pay_method,
-            address=address
+            address=address,
+            ship_method=ship_method,
+            shipping_cost=ship_method.cost,
         )
 
         for item in items:
@@ -79,13 +81,13 @@ class OrderWriteSerializerPublic(serializers.ModelSerializer):
         prefetch_items = Prefetch(
             'items',
             queryset=OrderItem.objects.all()
-            .select_related('item__product__brand')
+            .select_related('variant__product__brand')
             .order_by('id')
         )
         order = (Order.objects
                  .select_related('pay_method')
-                 .select_related('address__province')
-                 .select_related('address__city')
+                 .select_related('ship_method')
+                 .select_related('address__province', 'address__city')
                  .prefetch_related(prefetch_items)
                  .get(id=order.id))
 

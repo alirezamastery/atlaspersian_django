@@ -14,6 +14,16 @@ class _PaymentMethodSerializer(ModelSerializer):
         ]
 
 
+class _ShippingMethodSerializer(ModelSerializer):
+    class Meta:
+        model = ShippingMethod
+        fields = [
+            'type',
+            'title',
+            'description',
+        ]
+
+
 class _Province(ModelSerializer):
     class Meta:
         model = Province
@@ -89,8 +99,14 @@ class _Variant(ModelSerializer):
 
 
 class _OrderItemSerializer(ModelSerializer):
-    item = _Variant(read_only=True)
+    variant = _Variant(read_only=True)
 
     class Meta:
         model = OrderItem
-        fields = ['item', 'selling_price', 'quantity']
+        fields = [
+            'variant',
+            'quantity',
+            'discount_percent',
+            'raw_price',
+            'selling_price',
+        ]

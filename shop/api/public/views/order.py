@@ -36,20 +36,22 @@ class OrderViewSetPublic(mixins.RetrieveModelMixin,
         if self.action == 'list':
             return (Order.objects
                     .select_related('pay_method')
-                    .select_related('address__province')
-                    .select_related('address__city')
+                    .select_related('ship_method')
+                    .select_related('address__province', 'address__city')
                     .filter(user=self.request.user)
                     .order_by('-created_at'))
 
         prefetch_items = Prefetch(
             'items',
             queryset=OrderItem.objects.all()
-            .select_related('item__product__brand')
+            .select_related('variant__product__brand')
+            .select_related('variant__selector_value__type')
             .order_by('id')
         )
         return (Order.objects
                 .select_related('pay_method')
-                .select_related('address__province')
-                .select_related('address__city')
+                .select_related('ship_method')
+                .select_related('address__province', 'address__city')
                 .prefetch_related(prefetch_items)
-                .all())
+                .filter(user=self.request.user)
+                .order_by('-created_at'))

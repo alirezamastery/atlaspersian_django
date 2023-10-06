@@ -7,7 +7,7 @@ __all__ = [
 
 
 class ShippingMethod(models.Model):
-    type = models.CharField(max_length=255, unique=True)
+    type = models.CharField(max_length=255)
     title = models.CharField(max_length=255, unique=True)
     description = models.TextField(default='', blank=True)
     is_active = models.BooleanField(default=True)

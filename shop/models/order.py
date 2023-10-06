@@ -30,8 +30,10 @@ class Order(models.Model):
     address = models.ForeignKey('users.Address', on_delete=models.PROTECT, related_name='orders')
     user_note = models.TextField(default='', blank=True)
 
-    pay_amount = models.PositiveBigIntegerField()
     is_verified = models.BooleanField(default=False)
+
+    pay_amount = models.PositiveBigIntegerField()
+    shipping_cost = models.PositiveBigIntegerField()
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
@@ -40,7 +42,8 @@ class Order(models.Model):
         return f'{self.number} - {self.created_at}'
 
     def save(self, *args, **kwargs):
-        last_number = self.objects.all().aggregate(largest=models.Max('number'))['largest']
+        last_number = Order.objects.all().aggregate(largest=models.Max('number'))['largest']
+        print(f'{last_number = }')
         if last_number is not None:
             self.number = last_number + 1
         super().save(*args, **kwargs)
@@ -53,6 +56,7 @@ class OrderItem(models.Model):
     order = models.ForeignKey('shop.Order', on_delete=models.PROTECT, related_name='items')
     variant = models.ForeignKey('shop.Variant', on_delete=models.PROTECT, related_name='order_items')
 
+    quantity = models.PositiveIntegerField()
     discount_percent = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(99)])
 
     raw_price = models.PositiveBigIntegerField(validators=[MinValueValidator(10000)])

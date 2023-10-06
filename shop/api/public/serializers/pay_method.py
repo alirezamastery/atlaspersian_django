@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
 
 from shop.models import *
 
@@ -8,7 +9,7 @@ __all__ = [
 ]
 
 
-class PaymentMethodReadSerializerPublic(serializers.ModelSerializer):
+class PaymentMethodReadSerializerPublic(ModelSerializer):
     class Meta:
         model = PaymentMethod
         fields = [

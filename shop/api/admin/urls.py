@@ -24,5 +24,7 @@ router.register('orders', OrderViewSetAdmin, basename='orders')
 router.register('questions', QuestionViewSet, basename='questions')
 router.register('home-slides', HomeSlideViewSetAdmin, basename='home-slides')
 router.register('comments', CommentViewSet, basename='comments')
+router.register('payment-methods', PaymentMethodViewSetAdmin, basename='payment-methods')
+router.register('shipping-methods', ShippingMethodViewSetAdmin, basename='shipping-methods')
 
 urlpatterns += router.urls

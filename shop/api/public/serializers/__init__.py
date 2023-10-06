@@ -8,7 +8,10 @@ from .product.read.main import *
 from .order.read.main import *
 from .order.write.main import *
 
-from .payment import *
+from .pay_method import *
 from .shipping import *
 
 from .home_slide import *
+
+from .payment.read.main import *
+from .payment.write import *

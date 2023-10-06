@@ -9,3 +9,5 @@ from .order import *
 from .question import *
 from .comment import *
 from .card import *
+from .payment import *
+from .shipping import *

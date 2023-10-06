@@ -14,7 +14,7 @@ class Product(models.Model):
     is_active = models.BooleanField(default=True, blank=True)
     slug = models.SlugField(unique=True, editable=False, blank=True)
     thumbnail = models.ImageField(upload_to='product/thumbnail')
-    score = models.PositiveSmallIntegerField(default=5, validators=[MaxValueValidator(5)])
+    score = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(5)])
 
     category = models.ForeignKey(
         'shop.Category',

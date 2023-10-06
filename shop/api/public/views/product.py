@@ -1,4 +1,4 @@
-from django.db.models import Sum, Subquery, Value, Prefetch, Min, Max
+from django.db.models import *
 from django.db.models.functions import Coalesce
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
@@ -43,10 +43,13 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
                     .prefetch_related(prefetch_variants)
                     .filter(is_active=True, **filters)
                     .annotate(sale_sum=Sum('variants__sale_count'))
-                    .annotate(max_discount=Max('variants__discount'))
+                    .annotate(max_discount=Max('variants__discount_percent'))
                     .annotate(total_inventory=Coalesce(Subquery(total_inv_subq), Value(0)))
+                    .annotate(has_inventory=Case(When(total_inventory__gt=0, then=Value(True)),
+                                                 default=Value(False),
+                                                 output_field=BooleanField()))
                     .annotate(price_min=Coalesce(Subquery(price_min_subq), Value(0)))
-                    .order_by('-created_at'))
+                    .order_by('-has_inventory', '-created_at'))
 
         prefetch_attrs = Prefetch(
             'attribute_values',
@@ -113,4 +116,7 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
             'max':    price_max,
             'brands': BrandReadSerializerPublic(brands, many=True).data
         }
+
+        from pprint import pprint
+        pprint(response)
         return Response(response)

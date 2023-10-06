@@ -19,17 +19,17 @@ class CustomOrderingFilter(OrderingFilter):
 
         val = value[0]
         if val == 'n':
-            return qs.order_by('-created_at')
+            return qs.order_by('-has_inventory', '-created_at')
         elif val == 'p':
-            return qs.order_by('price_min')
+            return qs.order_by('-has_inventory', 'price_min')
         elif val == '-p':
-            return qs.order_by('-price_min')
+            return qs.order_by('-has_inventory', '-price_min')
         elif val == 'l':
-            return qs.order_by('-score')
+            return qs.order_by('-has_inventory', '-score')
         elif val == 'd':
-            return qs.order_by('-max_discount')
+            return qs.order_by('-has_inventory', '-max_discount')
         elif val == 's':
-            return qs.order_by('-sale_sum')
+            return qs.order_by('-has_inventory', '-sale_sum')
 
         return qs
 

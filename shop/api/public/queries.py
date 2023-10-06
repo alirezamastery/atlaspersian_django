@@ -14,7 +14,7 @@ def get_prefetch_variants():
     return Prefetch(
         'variants',
         queryset=Variant.objects
-        .filter(is_active=True)
+        .filter(is_active=True, inventory__gt=0)
         .select_related('selector_value__type')
         .order_by('id')
     )

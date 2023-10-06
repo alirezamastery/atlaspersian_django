@@ -28,3 +28,8 @@ from .comment.write import *
 
 from .home_slide import *
 from .card import *
+
+from .payment import *
+
+from .shipping import *
+
