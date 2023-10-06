@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q, F
 from django_filters import rest_framework as filters
 from django_filters import OrderingFilter
 from django_filters.constants import EMPTY_VALUES
@@ -27,7 +27,7 @@ class CustomOrderingFilter(OrderingFilter):
         elif val == 'l':
             return qs.order_by('-has_inventory', '-score')
         elif val == 'd':
-            return qs.order_by('-has_inventory', '-max_discount')
+            return qs.order_by('-has_inventory', F('max_discount').desc(nulls_last=True))
         elif val == 's':
             return qs.order_by('-has_inventory', '-sale_sum')
 

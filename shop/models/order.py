@@ -42,10 +42,10 @@ class Order(models.Model):
         return f'{self.number} - {self.created_at}'
 
     def save(self, *args, **kwargs):
-        last_number = Order.objects.all().aggregate(largest=models.Max('number'))['largest']
-        print(f'{last_number = }')
-        if last_number is not None:
-            self.number = last_number + 1
+        if self._state.adding:
+            last_number = Order.objects.all().aggregate(largest=models.Max('number'))['largest']
+            if last_number is not None:
+                self.number = last_number + 1
         super().save(*args, **kwargs)
 
     def delete(self, using=None, keep_parents=False):

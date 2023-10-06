@@ -43,7 +43,7 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
                     .prefetch_related(prefetch_variants)
                     .filter(is_active=True, **filters)
                     .annotate(sale_sum=Sum('variants__sale_count'))
-                    .annotate(max_discount=Max('variants__discount_percent'))
+                    .annotate(max_discount=Max('variants__discount_percent', filter=Q(variants__inventory__gt=0)))
                     .annotate(total_inventory=Coalesce(Subquery(total_inv_subq), Value(0)))
                     .annotate(has_inventory=Case(When(total_inventory__gt=0, then=Value(True)),
                                                  default=Value(False),
@@ -89,11 +89,13 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
 
     @action(detail=False, methods=['GET'], url_path='filter-config')
     def get_filter_config(self, request):
+        category = None
         category_id = request.query_params.get('cat_id')
-        try:
-            category = Category.objects.get(id=category_id)
-        except Category.DoesNotExist:
-            category = None
+        if category_id:
+            try:
+                category = Category.objects.get(id=category_id)
+            except Category.DoesNotExist:
+                pass
 
         filters = {}
         if category:
