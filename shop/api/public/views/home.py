@@ -27,12 +27,11 @@ class HomePageDataView(APIView):
                       .select_related('category')
                       .prefetch_related(prefetch_variants)
                       .filter(is_active=True)
-                      .annotate(sale_sum=Sum('variants__sale_count'))
                       .annotate(max_discount=Max('variants__discount_percent', filter=Q(variants__inventory__gt=0)))
                       .annotate(total_inventory=Coalesce(Subquery(total_inv_subq), Value(0)))
                       .annotate(price_min=Coalesce(Subquery(price_min_subq), Value(0)))
                       .filter(total_inventory__gt=0)
-                      .order_by('-max_discount', '-created_at'))
+                      .order_by('-max_discount', '-created_at')[:15])
 
         highest_sale = (Product.objects
                         .select_related('brand')
@@ -40,11 +39,11 @@ class HomePageDataView(APIView):
                         .prefetch_related(prefetch_variants)
                         .filter(is_active=True)
                         .annotate(sale_sum=Sum('variants__sale_count'))
-                        .annotate(max_discount=Max('variants__discount_percent'), filter=Q(variants__inventory__gt=0))
+                        .annotate(max_discount=Max('variants__discount_percent', filter=Q(variants__inventory__gt=0)))
                         .annotate(total_inventory=Coalesce(Subquery(total_inv_subq), Value(0)))
                         .annotate(price_min=Coalesce(Subquery(price_min_subq), Value(0)))
                         .filter(total_inventory__gt=0)
-                        .order_by('-sale_sum', '-created_at'))
+                        .order_by('-sale_sum', '-created_at')[:15])
 
         home_slides = HomeSlide.objects.all().order_by('-created_at')
 

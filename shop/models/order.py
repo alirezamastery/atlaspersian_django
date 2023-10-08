@@ -15,7 +15,8 @@ __all__ = [
 class Order(models.Model):
     class Status(models.TextChoices):
         PENDING_PAYMENT = 'PENDING_PAYMENT'
-        CANCELED = 'CANCELED'
+        CANCELED_USER = 'CANCELED_USER'
+        CANCELED_ADMIN = 'CANCELED_ADMIN'
         PAID = 'PAID'
         SENT = 'SENT'
         DELIVERED = 'DELIVERED'

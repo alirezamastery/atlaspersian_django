@@ -24,6 +24,7 @@ class OrderViewSetPublic(mixins.RetrieveModelMixin,
                          mixins.ListModelMixin,
                          GenericViewSet):
     permission_classes = [IsAuthenticated, IsOrderOwner]
+    lookup_field = 'number'
 
     def get_serializer_class(self):
         if self.action == 'list':
