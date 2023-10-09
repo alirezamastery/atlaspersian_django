@@ -49,10 +49,17 @@ class OrderViewSetPublic(mixins.RetrieveModelMixin,
             .select_related('variant__selector_value__type')
             .order_by('id')
         )
+        prefetch_payments = Prefetch(
+            'payments',
+            queryset=Payment.objects.all()
+            .select_related('method')
+            .order_by('id')
+        )
         return (Order.objects
                 .select_related('pay_method')
                 .select_related('ship_method')
                 .select_related('address__province', 'address__city')
                 .prefetch_related(prefetch_items)
+                .prefetch_related(prefetch_payments)
                 .filter(user=self.request.user)
                 .order_by('-created_at'))

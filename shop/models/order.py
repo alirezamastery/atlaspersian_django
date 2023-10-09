@@ -58,7 +58,9 @@ class OrderItem(models.Model):
     variant = models.ForeignKey('shop.Variant', on_delete=models.PROTECT, related_name='order_items')
 
     quantity = models.PositiveIntegerField()
+
     discount_percent = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(99)])
+    discount_value = models.PositiveBigIntegerField(default=0)
 
     raw_price = models.PositiveBigIntegerField(validators=[MinValueValidator(10000)])
     selling_price = models.PositiveBigIntegerField(validators=[MinValueValidator(10000)])

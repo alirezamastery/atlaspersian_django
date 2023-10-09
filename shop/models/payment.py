@@ -28,10 +28,9 @@ class Payment(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     tracking_id = models.CharField(max_length=255, unique=True)
-    method = models.ForeignKey('shop.PaymentMethod', on_delete=models.PROTECT)
-    order = models.ForeignKey('shop.Order', on_delete=models.PROTECT)
+    method = models.ForeignKey('shop.PaymentMethod', on_delete=models.PROTECT, related_name='payments')
+    order = models.ForeignKey('shop.Order', on_delete=models.PROTECT, related_name='payments')
     card_digits = models.CharField(max_length=255, blank=True, null=True)
-
     amount = models.PositiveBigIntegerField()
     date = models.DateTimeField()
 

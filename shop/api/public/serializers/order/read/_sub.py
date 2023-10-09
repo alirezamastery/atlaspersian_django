@@ -82,6 +82,8 @@ class _Product(ModelSerializer):
     class Meta:
         model = Product
         fields = [
+            'id',
+            'slug',
             'brand',
             'title',
             'description',
@@ -107,6 +109,30 @@ class _OrderItemSerializer(ModelSerializer):
             'variant',
             'quantity',
             'discount_percent',
+            'discount_value',
             'raw_price',
             'selling_price',
+        ]
+
+
+class _PaymentMethod(ModelSerializer):
+    class Meta:
+        model = PaymentMethod
+        fields = [
+            'type',
+            'title',
+            'description',
+        ]
+
+
+class _PaymentSerializer(ModelSerializer):
+    method = _PaymentMethod(read_only=True)
+
+    class Meta:
+        model = Payment
+        fields = [
+            'tracking_id',
+            'method',
+            'amount',
+            'date',
         ]

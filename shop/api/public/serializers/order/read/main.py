@@ -5,7 +5,8 @@ from ._sub import (
     _OrderItemSerializer,
     _PaymentMethodSerializer,
     _AddressSerializer,
-    _ShippingMethodSerializer
+    _ShippingMethodSerializer,
+    _PaymentSerializer,
 )
 
 
@@ -36,6 +37,11 @@ class OrderListSerializerPublic(serializers.ModelSerializer):
             'created_at',
         ]
 
+    def to_representation(self, instance):
+        res = super().to_representation(instance)
+        res['pay_amount_display'] = res['pay_amount'] // 10
+        return res
+
 
 class OrderDetailSerializerPublic(serializers.ModelSerializer):
     pay_method = _PaymentMethodSerializer(read_only=True)
@@ -43,6 +49,7 @@ class OrderDetailSerializerPublic(serializers.ModelSerializer):
     address = _AddressSerializer(read_only=True)
 
     items = _OrderItemSerializer(read_only=True, many=True)
+    payments = _PaymentSerializer(read_only=True, many=True)
 
     class Meta:
         model = Order
@@ -58,5 +65,11 @@ class OrderDetailSerializerPublic(serializers.ModelSerializer):
             'shipping_cost',
             'pay_amount',
             'created_at',
-            'items'
+            'items',
+            'payments',
         ]
+
+    def to_representation(self, instance):
+        res = super().to_representation(instance)
+        res['pay_amount_display'] = res['pay_amount'] // 10
+        return res

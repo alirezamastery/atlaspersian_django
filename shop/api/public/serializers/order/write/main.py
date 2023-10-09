@@ -66,6 +66,7 @@ class OrderWriteSerializerPublic(serializers.ModelSerializer):
                 variant=variant,
                 quantity=quantity,
                 discount_percent=variant.discount_percent,
+                discount_value=variant.discount_value,
                 raw_price=variant.raw_price,
                 selling_price=variant.selling_price,
             )
