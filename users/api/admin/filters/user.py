@@ -9,7 +9,7 @@ __all__ = [
 
 
 class UserFilterAdmin(filters.FilterSet):
-    q = filters.CharFilter(field_name='title', lookup_expr='icontains')
+    q = filters.CharFilter(field_name='mobile', lookup_expr='icontains')
     is_active = filters.BooleanFilter(field_name='is_active')
 
     class Meta:

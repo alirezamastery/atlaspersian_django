@@ -30,6 +30,7 @@ class UserViewSetAdmin(ModelViewSet):
         user = (User.objects
                 .select_related('profile')
                 .prefetch_related('groups')
+                .prefetch_related('user_permissions')
                 .get(pk=request.user.id))
         serializer = UserReadSerializerAdmin(user, context={'request': request})
         return Response(serializer.data)
