@@ -38,7 +38,7 @@ class SendAuthenticationOtpView(APIView):
         code = generate_otp()
         print(f'{code = }')
         OTP.objects.create(mobile=mobile, code=code)
-        # send_otp.delay(mobile)
+        send_otp.delay(mobile, code)
 
         return Response(response)
 
