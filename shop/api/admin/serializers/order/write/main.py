@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from shop.models import *
 from ._sub import *
-from ..read.main import OrderReadSerializerAdmin
+from ..read.main import OrderDetailSerializerAdmin
 
 
 __all__ = [
@@ -27,4 +27,4 @@ class OrderWriteSerializerAdmin(serializers.ModelSerializer):
         ]
 
     def to_representation(self, instance: Order) -> dict:
-        return OrderReadSerializerAdmin(instance).data
+        return OrderDetailSerializerAdmin(instance).data

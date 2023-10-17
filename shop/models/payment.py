@@ -22,11 +22,14 @@ class PaymentMethod(models.Model):
 
 class Payment(models.Model):
     class Status(models.TextChoices):
+        PENDING = 'PENDING'
         REJECTED = 'REJECTED'
         INVALID = 'INVALID'
         VERIFIED = 'VERIFIED'
+        REFUNDED = 'REFUNDED'
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    status = models.CharField(max_length=255, choices=Status.choices, default=Status.PENDING)
     tracking_id = models.CharField(max_length=255, unique=True)
     method = models.ForeignKey('shop.PaymentMethod', on_delete=models.PROTECT, related_name='payments')
     order = models.ForeignKey('shop.Order', on_delete=models.PROTECT, related_name='payments')
