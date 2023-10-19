@@ -14,4 +14,5 @@ class APIErrorCodes(Enum):
     OTP_EXPIRED = 5
 
     INVALID_VARIANT_QUANTITY = 6
+    INVALID_DISCOUNT_CODE = 7
 

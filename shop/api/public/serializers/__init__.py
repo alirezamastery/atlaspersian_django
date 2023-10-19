@@ -15,3 +15,5 @@ from .home_slide import *
 
 from .payment.read.main import *
 from .payment.write import *
+
+from .discount import *

@@ -26,5 +26,6 @@ router.register('home-slides', HomeSlideViewSetAdmin, basename='home-slides')
 router.register('comments', CommentViewSet, basename='comments')
 router.register('payment-methods', PaymentMethodViewSetAdmin, basename='payment-methods')
 router.register('shipping-methods', ShippingMethodViewSetAdmin, basename='shipping-methods')
+router.register('discount-codes', DiscountCodeViewSetAdmin, basename='discount-codes')
 
 urlpatterns += router.urls

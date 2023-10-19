@@ -9,3 +9,4 @@ from .cart import *
 from .media import *
 from .home import *
 from .comment import *
+from .discount import *

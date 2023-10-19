@@ -7,6 +7,7 @@ from ._sub import (
     _AddressSerializer,
     _ShippingMethodSerializer,
     _PaymentSerializer,
+    _DiscountCodeSerializer,
 )
 
 
@@ -20,6 +21,7 @@ class OrderListSerializerPublic(serializers.ModelSerializer):
     pay_method = _PaymentMethodSerializer(read_only=True)
     ship_method = _ShippingMethodSerializer(read_only=True)
     address = _AddressSerializer(read_only=True)
+    discount_code = _DiscountCodeSerializer(read_only=True)
 
     class Meta:
         model = Order
@@ -31,6 +33,7 @@ class OrderListSerializerPublic(serializers.ModelSerializer):
             'ship_method',
             'address',
             'user_note',
+            'discount_code',
             'is_verified',
             'shipping_cost',
             'pay_amount',
@@ -47,6 +50,7 @@ class OrderDetailSerializerPublic(serializers.ModelSerializer):
     pay_method = _PaymentMethodSerializer(read_only=True)
     ship_method = _ShippingMethodSerializer(read_only=True)
     address = _AddressSerializer(read_only=True)
+    discount_code = _DiscountCodeSerializer(read_only=True)
 
     items = _OrderItemSerializer(read_only=True, many=True)
     payments = _PaymentSerializer(read_only=True, many=True)
@@ -61,6 +65,7 @@ class OrderDetailSerializerPublic(serializers.ModelSerializer):
             'ship_method',
             'address',
             'user_note',
+            'discount_code',
             'is_verified',
             'shipping_cost',
             'pay_amount',

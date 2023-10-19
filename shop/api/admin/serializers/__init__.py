@@ -33,3 +33,5 @@ from .payment import *
 
 from .shipping import *
 
+from .discount import *
+

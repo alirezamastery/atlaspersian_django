@@ -25,17 +25,19 @@ class Payment(models.Model):
         PENDING = 'PENDING'
         REJECTED = 'REJECTED'
         INVALID = 'INVALID'
+        SUCCESS = 'SUCCESS'
         VERIFIED = 'VERIFIED'
         REFUNDED = 'REFUNDED'
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    status = models.CharField(max_length=255, choices=Status.choices, default=Status.PENDING)
+    amount = models.PositiveBigIntegerField()
+    date = models.DateTimeField()
+    successful = models.BooleanField(default=False)
+    status = models.CharField(max_length=255, choices=Status.choices, default=Status.SUCCESS)
     tracking_id = models.CharField(max_length=255, unique=True)
     method = models.ForeignKey('shop.PaymentMethod', on_delete=models.PROTECT, related_name='payments')
     order = models.ForeignKey('shop.Order', on_delete=models.PROTECT, related_name='payments')
     card_digits = models.CharField(max_length=255, blank=True, null=True)
-    amount = models.PositiveBigIntegerField()
-    date = models.DateTimeField()
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)

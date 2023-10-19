@@ -11,6 +11,7 @@ router = DefaultRouter()
 urlpatterns = [
     path('home-data/', HomePageDataView.as_view(), name='home-data'),
     path('checkout-opts/', CartCheckoutOptionsView.as_view(), name='cart-checkout-opts'),
+    path('verify-discount/', DiscountCodeVerifyView.as_view(), name='verify-discount'),
 ]
 
 router.register('home-slides', HomeSlideViewSetPublic, basename='home-slides')

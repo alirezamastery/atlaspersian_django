@@ -14,6 +14,7 @@ __all__ = [
 
 class OrderWriteSerializerPublic(serializers.ModelSerializer):
     items = serializers.ListSerializer(child=_OrderItemWriteSerializer(), allow_empty=False)
+    discount_code = serializers.CharField()
 
     class Meta:
         model = Order
@@ -23,6 +24,7 @@ class OrderWriteSerializerPublic(serializers.ModelSerializer):
             'ship_method',
             'address',
             'user_note',
+            'discount_code',
         ]
 
     def validate(self, attrs):
@@ -37,6 +39,14 @@ class OrderWriteSerializerPublic(serializers.ModelSerializer):
                     'inventory':  variant.inventory,
                 })
 
+        code = attrs.get('discount_code')
+        print(f'{code = }')
+        try:
+            code_obj = DiscountCode.objects.get(code=code)
+        except DiscountCode.DoesNotExist:
+            code_obj = None
+        attrs['discount_code_obj'] = code_obj
+
         return attrs
 
     def create(self, validated_data):
@@ -46,10 +56,14 @@ class OrderWriteSerializerPublic(serializers.ModelSerializer):
         pay_method = validated_data['pay_method']
         ship_method = validated_data['ship_method']
         address = validated_data['address']
+        user_note = validated_data['user_note']
+        discount_code_obj = validated_data['discount_code_obj']
 
-        pay_amount = ship_method.cost
+        pay_amount = 0
         order = Order.objects.create(
             user=request.user,
+            user_note=user_note,
+            discount_code=discount_code_obj,
             pay_amount=pay_amount,
             pay_method=pay_method,
             address=address,
@@ -75,7 +89,14 @@ class OrderWriteSerializerPublic(serializers.ModelSerializer):
             variant.save()
 
             pay_amount += variant.selling_price * quantity
+            print(f'{pay_amount = }')
 
+        print(f'{discount_code_obj = }')
+        if discount_code_obj is not None:
+            pay_amount = discount_code_obj.apply_discount(pay_amount)
+            print(f'apply_discount: {pay_amount = }')
+        pay_amount += ship_method.cost
+        print(f'{pay_amount = }')
         order.pay_amount = pay_amount
         order.save()
 

@@ -4,6 +4,7 @@ from rest_framework import status
 
 from users.models import *
 from users.api.public.serializers import *
+from shop.models import Order
 
 
 __all__ = [
@@ -18,6 +19,7 @@ class UserInfoView(APIView):
     def get(self, request):
         user = User.objects.select_related('profile').get(pk=request.user.id)
         serializer = UserReadSerializerPublic(user, context={'request': request})
+
         return Response(serializer.data)
 
 

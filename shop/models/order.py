@@ -2,13 +2,13 @@ import uuid
 
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-
-# from shop.models import PriceModel
+from django.conf import settings
 
 
 __all__ = [
     'Order',
     'OrderItem',
+    'DiscountCode',
 ]
 
 
@@ -18,6 +18,7 @@ class Order(models.Model):
         CANCELED_USER = 'CANCELED_USER'
         CANCELED_ADMIN = 'CANCELED_ADMIN'
         PAID = 'PAID'
+        PROCESSING = 'PROCESSING'
         SENT = 'SENT'
         DELIVERED = 'DELIVERED'
         COMPLETED = 'COMPLETED'
@@ -26,10 +27,18 @@ class Order(models.Model):
     number = models.PositiveBigIntegerField(default=109010, unique=True)
     user = models.ForeignKey('users.User', on_delete=models.PROTECT, related_name='shop_orders')
     status = models.CharField(max_length=255, choices=Status.choices, default=Status.PENDING_PAYMENT)
+
     pay_method = models.ForeignKey('shop.PaymentMethod', on_delete=models.PROTECT, related_name='orders')
     ship_method = models.ForeignKey('shop.ShippingMethod', on_delete=models.PROTECT, related_name='orders')
     address = models.ForeignKey('users.Address', on_delete=models.PROTECT, related_name='orders')
     user_note = models.TextField(default='', blank=True)
+    discount_code = models.ForeignKey(
+        'shop.DiscountCode',
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+        related_name='orders'
+    )
 
     is_verified = models.BooleanField(default=False)
 
@@ -75,3 +84,16 @@ class OrderItem(models.Model):
                 name='unique_order_variant'
             )
         ]
+
+
+class DiscountCode(models.Model):
+    code = models.CharField(max_length=255)
+    percent = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(99)])
+
+    def apply_discount(self, pay_amount: int):
+        round_to = settings.PRICE_ROUND_TO
+        discounted = pay_amount * (100 - self.percent) / 100
+        return discounted // round_to * round_to
+
+    def __str__(self):
+        return f'{self.code} - {self.percent}%'

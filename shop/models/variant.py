@@ -1,3 +1,5 @@
+import math
+
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
@@ -49,12 +51,12 @@ class Variant(models.Model):
         return f'{self.product} - {self.selector_value.value}'
 
     def save(self, **kwargs):
-        decimal = settings.PRICE_DECIMAL
+        round_to = settings.PRICE_ROUND_TO
 
-        self.raw_price = round(self.raw_price, decimal)
-        self.discount_value = round(self.raw_price * self.discount_percent / 100, decimal)
+        self.raw_price = (self.raw_price // round_to) * round_to
+        self.discount_value = (self.raw_price * self.discount_percent / 100) // round_to * round_to
         selling_price = self.raw_price * (100 - self.discount_percent) / 100
-        self.selling_price = round(selling_price, decimal)
+        self.selling_price = selling_price // round_to * round_to
 
         super().save(**kwargs)
 

@@ -137,3 +137,12 @@ class _PaymentSerializer(ModelSerializer):
             'amount',
             'date',
         ]
+
+
+class _DiscountCodeSerializer(ModelSerializer):
+    class Meta:
+        model = DiscountCode
+        fields = [
+            'code',
+            'percent',
+        ]

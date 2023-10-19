@@ -23,7 +23,13 @@ class PaymentWriteSerializerPublic(ModelSerializer):
 
     def save(self, **kwargs):
         payment = super().save(**kwargs)
-        return Payment.objects.select_related('order').get(id=payment.id)
+        payment = Payment.objects.select_related('order').get(id=payment.id)
+
+        if payment.successful:
+            payment.order.status = Order.Status.PROCESSING
+            payment.order.save()
+
+        return payment
 
     def to_representation(self, instance):
         return PaymentReadSerializerPublic(instance).data

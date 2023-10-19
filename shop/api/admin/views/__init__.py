@@ -11,3 +11,4 @@ from .comment import *
 from .card import *
 from .payment import *
 from .shipping import *
+from .discount import *
