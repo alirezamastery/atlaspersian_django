@@ -2,7 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import SAFE_METHODS
+from rest_framework.permissions import SAFE_METHODS, BasePermission
 from rest_framework.decorators import action
 
 from users.models import User
@@ -14,6 +14,12 @@ __all__ = [
     'UserViewSetAdmin',
     'ProfileViewAdmin',
 ]
+
+
+class ProfilePermission(BasePermission):
+
+    def has_permission(self, request, view):
+        return request.user.is_superuser
 
 
 class UserViewSetAdmin(ModelViewSet):
@@ -38,6 +44,7 @@ class UserViewSetAdmin(ModelViewSet):
 
 class ProfileViewAdmin(APIView):
     http_method_names = ['get', 'patch', 'options']
+    permission_classes = []
 
     def get(self, request):
         serializer = ProfileReadSerializerAdmin(request.user.profile, context={'request': request})

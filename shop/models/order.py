@@ -24,7 +24,7 @@ class Order(models.Model):
         COMPLETED = 'COMPLETED'
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    number = models.PositiveBigIntegerField(default=109010, unique=True)
+    number = models.PositiveBigIntegerField(default=10911, unique=True)
     user = models.ForeignKey('users.User', on_delete=models.PROTECT, related_name='shop_orders')
     status = models.CharField(max_length=255, choices=Status.choices, default=Status.PENDING_PAYMENT)
 
@@ -87,13 +87,23 @@ class OrderItem(models.Model):
 
 
 class DiscountCode(models.Model):
+    class Types(models.TextChoices):
+        PERCENT = 'PERCENT'
+        RIAL = 'RIAL'
+
+    type = models.TextField(choices=Types.choices, default=Types.PERCENT)
     code = models.CharField(max_length=255)
-    percent = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(99)])
+    value = models.PositiveBigIntegerField(default=0)
 
     def apply_discount(self, pay_amount: int):
         round_to = settings.PRICE_ROUND_TO
-        discounted = pay_amount * (100 - self.percent) / 100
+
+        if self.type == DiscountCode.Types.PERCENT:
+            discounted = pay_amount * (100 - self.value) / 100
+        else:
+            discounted = pay_amount - self.value
+
         return discounted // round_to * round_to
 
     def __str__(self):
-        return f'{self.code} - {self.percent}%'
+        return f'{self.type} - {self.code} - {self.value}%'

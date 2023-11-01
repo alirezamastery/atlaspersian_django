@@ -69,7 +69,7 @@ class ImageUploadSerializerAdmin(serializers.Serializer):
             if img.mode in ['RGBA', 'P']:
                 img = img.convert('RGB')
             img.thumbnail((1500, 1500), Image.Resampling.LANCZOS)
-            img.save(f'{settings.MEDIA_ROOT}/{path}', optimize=True, quality=50)
+            img.save(f'{settings.MEDIA_ROOT}/{path}', optimize=True, quality=95)
 
         except UnidentifiedImageError:
             return None
