@@ -15,3 +15,11 @@ class AttributeUnitReadWriteSerializerAdmin(serializers.ModelSerializer):
             'id',
             'title',
         ]
+
+    def validate(self, attrs):
+        title = attrs.get('title')
+
+        if AttributeUnit.objects.filter(title=title).exists():
+            raise serializers.ValidationError('already exists')
+
+        return attrs

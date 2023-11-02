@@ -17,3 +17,12 @@ class AttributeWriteSerializerAdmin(serializers.ModelSerializer):
             'type',
             'unit',
         ]
+
+    def validate(self, attrs):
+        title = attrs.get('title')
+        unit = attrs.get('unit')
+
+        if Attribute.objects.filter(title=title, unit=unit).exists():
+            raise serializers.ValidationError('already exists')
+
+        return attrs

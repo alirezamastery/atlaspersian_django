@@ -14,7 +14,7 @@ class Attribute(models.Model):
         LONG_TEXT = 'LONG_TEXT'
         BOOLEAN = 'BOOLEAN'
 
-    title = models.CharField(max_length=255, unique=True)
+    title = models.CharField(max_length=255)
     type = models.CharField(max_length=255, choices=Types.choices, default=Types.NUMBER, blank=True)
     description = models.TextField(default='', blank=True)
 
@@ -25,6 +25,14 @@ class Attribute(models.Model):
         blank=True,
         null=True,
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['title', 'unit'],
+                name='unique__title_unit',
+            )
+        ]
 
     def __str__(self):
         return self.title

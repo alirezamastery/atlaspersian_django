@@ -18,6 +18,7 @@ class ProductWriteSerializerAdmin(serializers.ModelSerializer):
     attribute_values = serializers.ListSerializer(child=_ProductAttributeValueWriteSerializer(), allow_empty=True)
     new_images = serializers.ListSerializer(child=_NewProductImageWriteSerializer(), allow_empty=True)
     main_img = serializers.PrimaryKeyRelatedField(queryset=ProductImage.objects.all(), required=False, allow_null=True)
+    description = serializers.CharField(allow_blank=True)
 
     class Meta:
         model = Product
