@@ -55,6 +55,8 @@ class ProductAttributeValue(models.Model):
 
     value = models.TextField()
     extra_info = models.TextField(default='', blank=True)
+    # is_active = models.BooleanField(default=True)
+    # order = models.SmallIntegerField(default=0)
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)

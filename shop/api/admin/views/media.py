@@ -21,7 +21,10 @@ class ImageViewSetAdmin(ModelViewSet):
 
     @action(methods=['POST'], detail=False, url_path='upload')
     def upload(self, request, *args, **kwargs):
-        serializer = ImageUploadSerializerAdmin(data=request.FILES, context={'save_path': 'product/img/'})
+        serializer = ImageUploadSerializerAdmin(data=request.data, context={
+            'save_path': 'product/img/',
+            'request':   request
+        })
         serializer.is_valid(raise_exception=True)
         response = serializer.save()
         return Response(response)
@@ -38,7 +41,10 @@ class HomeSlideViewSetAdmin(ModelViewSet):
 
     @action(methods=['POST'], detail=False, url_path='upload')
     def upload(self, request, *args, **kwargs):
-        serializer = ImageUploadSerializerAdmin(data=request.FILES, context={'save_path': 'home/slide/'})
+        serializer = ImageUploadSerializerAdmin(data=request.data, context={
+            'save_path': 'home/slide/',
+            'request':   request
+        })
         serializer.is_valid(raise_exception=True)
         response = serializer.save()
         return Response(response)
