@@ -9,12 +9,13 @@ from shop.models import *
 
 
 __all__ = [
-    'ImageReadSerializer',
+    'ProductImageReadSerializer',
+    'ProductImageUpdateSerializer',
     'ImageUploadSerializerAdmin',
 ]
 
 
-class ImageReadSerializer(serializers.ModelSerializer):
+class ProductImageReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
         fields = ['id', 'product', 'url', 'is_main', 'description']
@@ -29,6 +30,16 @@ class ImageReadSerializer(serializers.ModelSerializer):
         if (host := self.context.get('host')) is not None:
             return f'{host}{url}'
         return url
+
+
+class ProductImageUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProductImage
+        fields = [
+            'alt',
+            'description',
+        ]
 
 
 class ImageUploadSerializerAdmin(serializers.Serializer):

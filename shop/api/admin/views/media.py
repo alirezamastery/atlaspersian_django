@@ -9,15 +9,19 @@ from utils.drf.permissions import *
 
 
 __all__ = [
-    'ImageViewSetAdmin',
+    'ProductImageViewSetAdmin',
     'HomeSlideViewSetAdmin',
 ]
 
 
-class ImageViewSetAdmin(ModelViewSet):
+class ProductImageViewSetAdmin(ModelViewSet):
     queryset = ProductImage.objects.all().order_by('id')
-    serializer_class = ImageReadSerializer
     permission_classes = [IsAdmin]
+
+    def get_serializer_class(self):
+        if self.request.method in SAFE_METHODS:
+            return ProductImageReadSerializer
+        return ProductImageUpdateSerializer
 
     @action(methods=['POST'], detail=False, url_path='upload')
     def upload(self, request, *args, **kwargs):

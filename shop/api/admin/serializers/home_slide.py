@@ -46,3 +46,5 @@ class HomeSlideWriteSerializerAdmin(ModelSerializer):
             'alt',
             'description',
         ]
+
+
