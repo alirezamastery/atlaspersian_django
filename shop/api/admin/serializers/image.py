@@ -33,8 +33,8 @@ class ImageReadSerializer(serializers.ModelSerializer):
 
 class ImageUploadSerializerAdmin(serializers.Serializer):
     image = serializers.ImageField()
-    width = serializers.IntegerField(required=False, min_value=1)
-    height = serializers.IntegerField(required=False, min_value=1)
+    width = serializers.IntegerField(required=False, min_value=1, default=1500)
+    height = serializers.IntegerField(required=False, min_value=1, default=1500)
     quality = serializers.IntegerField(required=False, min_value=1, max_value=100)
 
     def validate(self, attrs):
