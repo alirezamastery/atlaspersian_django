@@ -138,7 +138,7 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_DIR_NAME = 'media'
-MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_DIR_NAME)
+MEDIA_ROOT = config('MEDIA_ROOT')
 MEDIA_URL = '/media/'
 
 # Default primary key field type
@@ -152,8 +152,9 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:3000',
     'http://127.0.0.1:9000',
     'http://localhost:9000',
-    'https://persia-atlas.com',
-    'https://atlaspersian.com',
+    'http://localhost:3000',
+    'https://atlaspersia.com',
+    'https://persianatlas.com',
 ]
 CORS_ALLOW_CREDENTIALS = True
 
@@ -161,8 +162,9 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:3000',
     'http://127.0.0.1:9000',
     'http://localhost:9300/',
-    'https://persia-atlas.com',
-    'https://atlaspersian.com',
+    'http://localhost:3000/',
+    'https://atlaspersia.com',
+    'https://persianatlas.com',
 ]
 
 CUSTOM_LOGGING = config('CUSTOM_LOGGING')
@@ -226,6 +228,9 @@ SIMPLE_JWT = {
 }
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+CELERY_BROKER_URL = 'redis://localhost:6379/1'
+
 
 PRICE_DECIMAL = -3
 PRICE_ROUND_TO = 1000

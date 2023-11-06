@@ -35,7 +35,7 @@ class ProductViewSetPublic(ReadOnlyModelViewSet):
 
             prefetch_variants = get_prefetch_variants()
             total_inv_subq = get_total_inventory_subq()
-            price_min_subq = get_price_min_subq()
+            price_min_subq = get_price_min_subq(filters={'inventory__gt': 0})
 
             return (Product.objects
                     .select_related('brand')

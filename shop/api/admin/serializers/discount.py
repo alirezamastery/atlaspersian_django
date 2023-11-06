@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, ValidationError
 
 from shop.models import *
 
@@ -14,8 +14,9 @@ class DiscountCodeReadSerializerAdmin(ModelSerializer):
         model = DiscountCode
         fields = [
             'id',
+            'type',
             'code',
-            'percent',
+            'value',
         ]
 
 
@@ -23,6 +24,13 @@ class DiscountCodeWriteSerializerAdmin(ModelSerializer):
     class Meta:
         model = DiscountCode
         fields = [
+            'type',
             'code',
-            'percent',
+            'value',
         ]
+
+    def validate(self, attrs):
+        value = attrs.get('value')
+        if attrs.get('type') == DiscountCode.Types.PERCENT and value > 99:
+            raise ValidationError('invalid percent')
+        return attrs

@@ -44,6 +44,9 @@ class ProductImageUpdateSerializer(serializers.ModelSerializer):
 
 class ImageUploadSerializerAdmin(serializers.Serializer):
     image = serializers.ImageField()
+    width = serializers.IntegerField(required=False, min_value=1, default=1500)
+    height = serializers.IntegerField(required=False, min_value=1, default=1500)
+    quality = serializers.IntegerField(required=False, min_value=1, max_value=100)
 
     def validate(self, attrs):
         image = attrs.get('image')
@@ -69,7 +72,12 @@ class ImageUploadSerializerAdmin(serializers.Serializer):
 
         image = self.validated_data.get('image')
         extension = self.validated_data.get('extension')
-        new_name = f'{uuid.uuid4().hex}.{extension}'
+
+        width = self.validated_data.get('width')
+        height = self.validated_data.get('height')
+        quality = self.validated_data.get('quality', 100)
+
+        new_name = f'{uuid.uuid4().hex}.webp'
         path = f'{save_path}{new_name}'
 
         from PIL import ImageFile
@@ -79,8 +87,14 @@ class ImageUploadSerializerAdmin(serializers.Serializer):
             img = Image.open(image)
             if img.mode in ['RGBA', 'P']:
                 img = img.convert('RGB')
-            img.thumbnail((1500, 1500), Image.Resampling.LANCZOS)
-            img.save(f'{settings.MEDIA_ROOT}/{path}', optimize=True, quality=50)
+
+            if width and height:
+                size = (width, height)
+            else:
+                size = (1500, 1500)
+
+            img.thumbnail(size, Image.Resampling.LANCZOS)
+            img.save(f'{settings.MEDIA_ROOT}/{path}', 'webp', optimize=True, quality=quality)
 
         except UnidentifiedImageError:
             return None

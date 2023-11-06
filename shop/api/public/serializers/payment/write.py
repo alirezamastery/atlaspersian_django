@@ -14,10 +14,11 @@ class PaymentWriteSerializerPublic(ModelSerializer):
         model = Payment
         fields = [
             'tracking_id',
-            'method',
-            'order',
             'amount',
             'date',
+            'successful',
+            'order',
+            'method',
             'card_digits',
         ]
 

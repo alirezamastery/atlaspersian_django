@@ -30,9 +30,11 @@ def get_total_inventory_subq():
 
 def get_price_min_subq(*, filters: dict | None = None):
     if filters is None:
-        filters = {}
+        _filters = {}
+    else:
+        _filters = filters
     return (Variant.objects
             .values('product_id')
-            .filter(product=OuterRef('id'), is_active=True, **filters)
+            .filter(product=OuterRef('id'), is_active=True, **_filters)
             .annotate(min=Min('selling_price'))
             .values('min'))

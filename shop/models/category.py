@@ -70,7 +70,7 @@ class Category(MP_Node):
             newobj = {
                 # 'data': fields,
                 'title':         fields['title'],
-                'selector_type': fields['selector_type']
+                'selector_type': fields['selector_type'],
             }
             if keep_ids:
                 newobj[pk_field] = pyobj['pk']

@@ -41,9 +41,9 @@ class ProductFilterPublic(filters.FilterSet):
     # pmin = filters.NumberFilter(method='price_min_filter')
     # pmax = filters.NumberFilter(method='price_max_filter')
     is_av = filters.BooleanFilter(method='is_available')
-    cat_id = filters.NumberFilter(field_name='category_id')
+    cat_id = filters.NumberFilter(method='category_filter')
 
-    # map: newest price -price liked discount sale_count
+    # Map: newest price -price liked discount sale_count
     o = CustomOrderingFilter(fields=['n', 'p', '-p', 'l', 'd', 's'])
 
     class Meta:
@@ -67,3 +67,13 @@ class ProductFilterPublic(filters.FilterSet):
         if value > -1:
             return qs.filter(price_min__lte=value)
         return qs
+
+    def category_filter(self, qs, name, value):
+        if value in EMPTY_VALUES:
+            return qs
+        try:
+            category = Category.objects.get(id=value)
+        except Category.DoesNotExist:
+            return qs
+        ids = category.get_descendants().values_list('id', flat=True)
+        return qs.filter(category_id__in=ids)

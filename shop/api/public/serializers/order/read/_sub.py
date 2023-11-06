@@ -131,11 +131,12 @@ class _PaymentSerializer(ModelSerializer):
     class Meta:
         model = Payment
         fields = [
+            'amount',
+            'date',
+            'successful',
             'status',
             'tracking_id',
             'method',
-            'amount',
-            'date',
         ]
 
 
