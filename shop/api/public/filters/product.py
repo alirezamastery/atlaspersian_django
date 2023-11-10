@@ -76,4 +76,4 @@ class ProductFilterPublic(filters.FilterSet):
         except Category.DoesNotExist:
             return qs
         ids = category.get_descendants().values_list('id', flat=True)
-        return qs.filter(category_id__in=ids)
+        return qs.filter(Q(category_id__in=ids) | Q(category=category))

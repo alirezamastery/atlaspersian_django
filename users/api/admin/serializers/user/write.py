@@ -14,7 +14,6 @@ class UserWriteSerializerAdmin(serializers.ModelSerializer):
         model = User
         fields = [
             'mobile',
-            'email',
             'is_staff',
             'is_active',
             'is_superuser',
