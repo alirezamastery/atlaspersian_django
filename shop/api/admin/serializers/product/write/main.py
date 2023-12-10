@@ -1,5 +1,7 @@
-from rest_framework import serializers
+from io import BytesIO
 
+from rest_framework import serializers
+from PIL import Image, UnidentifiedImageError
 from shop.models import *
 from shop.queries import get_product_with_attrs
 from ..read.main import ProductDetailSerializerAdmin

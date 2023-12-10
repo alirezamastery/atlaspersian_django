@@ -41,6 +41,18 @@ class UserViewSetAdmin(ModelViewSet):
         serializer = UserReadSerializerAdmin(user, context={'request': request})
         return Response(serializer.data)
 
+    @action(methods=['POST'], detail=True, url_path='change-password')
+    def change_password(self, request, *args, **kwargs):
+        serializer = PasswordResetSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        new_password = serializer.validated_data['new_password']
+        user = self.get_object()
+        user.set_password(new_password)
+        user.save()
+
+        return Response({'info': 'password reset'}, status=status.HTTP_202_ACCEPTED)
+
 
 class ProfileViewAdmin(APIView):
     http_method_names = ['get', 'patch', 'options']

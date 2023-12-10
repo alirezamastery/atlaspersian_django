@@ -5,7 +5,8 @@ from .read.main import UserReadSerializerAdmin
 
 
 __all__ = [
-    'UserWriteSerializerAdmin'
+    'UserWriteSerializerAdmin',
+    'PasswordResetSerializer',
 ]
 
 
@@ -23,3 +24,7 @@ class UserWriteSerializerAdmin(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         return UserReadSerializerAdmin(instance).data
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    new_password = serializers.CharField(min_length=6, max_length=20, trim_whitespace=True)

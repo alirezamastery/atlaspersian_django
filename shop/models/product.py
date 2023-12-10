@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.validators import MaxValueValidator
+from PIL import Image, UnidentifiedImageError
+
 from utils.slug import unique_slugify
 
 
@@ -46,7 +48,16 @@ class Product(models.Model):
         if self._state.adding:
             slug_str = f'{self.title}'.replace(' ', '-')
             unique_slugify(self, slug_str)
-        return super().save(*args, **kwargs)
+
+        super().save(*args, **kwargs)
+
+        if self.thumbnail:
+            img = Image.open(self.thumbnail.path)
+            w = 500
+            h = 500
+            if img.height > h or img.width > w:
+                img.thumbnail((w, h))
+                img.save(self.thumbnail.path)
 
 
 class ProductAttributeValue(models.Model):
